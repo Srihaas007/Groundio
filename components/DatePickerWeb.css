@@ -1,0 +1,31 @@
+.datepicker-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+  }
+  
+  .react-datepicker__input-container input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    font-size: 16px;
+    color: #666;
+    background-color: #fff;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+  
+  .react-datepicker__triangle {
+    display: none; /* Hide the triangle arrow */
+  }
+
+  .datepicker-container {
+    position: relative;
+    z-index: 1000; /* High z-index to ensure it's on top */
+}
+
+  
