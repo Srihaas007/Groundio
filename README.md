@@ -25,3 +25,7 @@ react-native-reanimated@~3.10.1 \
 react-native-tab-view@^3.5.2 \
 react-native-ui-datepicker@^2.0.3 \
 react-toastify@^10.0.5
+```
+
+# Please refer to "master" branch for Srihaas code
+## everyone please create your seperate branches thank you.
