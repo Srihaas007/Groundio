@@ -1,14 +1,21 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import * as SplashScreen from 'expo-splash-screen';  // Correct import
 import 'react-native-reanimated';
+import Background from '../components/Background';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useColorScheme } from '../hooks/useColorScheme';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import LoginScreen from './LoginScreen'; // Ensure path is correct
+import SignUpScreen from './SignUpScreen'; // Ensure path is correct
+import WelcomeScreen from './screens/customers/WelcomeScreen'; // Ensure path is correct
+import ForgotPasswordScreen from './ForgotPasswordScreen'; // Ensure path is correct
+import TermsScreen from './TermsScreen'; // Add path if you have a Terms screen
+import CustomLoadingSpinner from '../components/CustomLoadingSpinner'; // Ensure this path is correct
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+const Stack = createStackNavigator();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -17,24 +24,46 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    async function hideSplashScreen() {
+      if (loaded) {
+        try {
+          await SplashScreen.hideAsync();
+        } catch (error) {
+          console.warn('Error hiding splash screen:', error);
+        }
+      }
     }
-  }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+    hideSplashScreen();
+  }, [loaded]);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen name="terms" options={{ headerShown: false }} />
-        <Stack.Screen name="welcome" options={{ headerShown: false }} />
-        <Stack.Screen name="ForgotPasswordScreen" options={{ headerShown: false }} />
-    </Stack>
+      <Background>
+        <View style={{ flex: 1 }}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+            <Stack.Screen name="screens/customers/WelcomeScreen" component={WelcomeScreen} />
+            <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+            <Stack.Screen name="TermsScreen" component={TermsScreen} />
+          </Stack.Navigator>
+          {!loaded && (
+            <View style={styles.spinnerOverlay}>
+              <CustomLoadingSpinner />
+            </View>
+          )}
+        </View>
+      </Background>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  spinnerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background to overlay the spinner
+  },
+});

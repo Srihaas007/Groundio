@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../services/firebase';
+import { auth } from '../../../services/firebase';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import UniversalAlert from '../components/AlertDialog';
+import UniversalAlert from '../../../components/AlertDialog';
 
 export default function WelcomeScreen() {
   const [userName, setUserName] = useState('');
@@ -46,7 +46,7 @@ export default function WelcomeScreen() {
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigation.navigate('login');
+      navigation.navigate('LoginScreen');
     } catch (error) {
       showMessage('Failed to log out.', false);
     }

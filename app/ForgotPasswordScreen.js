@@ -17,6 +17,10 @@ export default function ForgotPasswordScreen() {
     setAlertMessage(message);
     setAlertSuccess(success);
     setAlertVisible(true);
+
+    if (success) {
+      setEmail('');
+    }
   };
 
   const handleResetPassword = async () => {

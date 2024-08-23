@@ -41,6 +41,16 @@ export default function SignupScreen() {
     setAlertMessage(message);
     setAlertSuccess(success);
     setAlertVisible(true);
+
+    // If the message is for a successful operation, reset all fields
+    if (success) {
+      setFullName('');
+      setMobile('');
+      setEmail('');
+      setPassword('');
+      setRetypePassword('');
+      setDob(new Date());  // Resetting the date of birth to the current date or a default value
+    }
   };
 
   const handleSignup = async () => {
@@ -83,7 +93,7 @@ export default function SignupScreen() {
       });
 
       showMessage('Sign up successful! A verification email has been sent to your email address. Please verify your email before logging in.', true);
-      setTimeout(() => navigation.navigate('login'), 5000);
+      setTimeout(() => navigation.navigate('LoginScreen'), 5000);
     } catch (error) {
       showMessage(error.message);
     }
@@ -167,13 +177,13 @@ export default function SignupScreen() {
           By signing up, you have accepted our{' '}
           <Text
             style={styles.link}
-            onPress={() => navigation.navigate('terms')}
+            onPress={() => navigation.navigate('TermsScreen')}
           >
             Terms and Conditions
           </Text>.
         </Text>
 
-        <Pressable onPress={() => navigation.navigate('login')}>
+        <Pressable onPress={() => navigation.navigate('LoginScreen')}>
           <Text style={styles.loginText}>Already registered? Login here</Text>
         </Pressable>
       </View>

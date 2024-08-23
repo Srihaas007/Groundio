@@ -6,7 +6,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Pressable,
-  Platform
+  Platform,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -25,6 +26,11 @@ export default function LoginScreen() {
     setAlertMessage(message);
     setAlertSuccess(success);
     setAlertVisible(true);
+
+    if (success) {
+      setEmail('');
+      setPassword('');
+    }
   };
 
   const handleLogin = async () => {
@@ -38,7 +44,7 @@ export default function LoginScreen() {
       const user = userCredential.user;
 
       if (user.emailVerified) {
-        navigation.navigate('welcome');
+        navigation.navigate('screens/customers/WelcomeScreen');
       } else {
         showMessage('Please verify your email before logging in.', false);
       }
@@ -48,67 +54,76 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+    <ImageBackground
+      source={require('../assets/images/background.jpg')} // Ensure this path is correct
+      style={styles.background}
     >
-      <View style={styles.inner}>
-        <Text style={styles.title}>Login</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#666" // Explicitly set placeholder text color
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <View style={styles.inner}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#666"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#666"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+          <Pressable style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </Pressable>
+          <Pressable
+            style={styles.forgotPasswordLink}
+            onPress={() => navigation.navigate('ForgotPasswordScreen')}
+          >
+            <Text style={styles.link}>Forgot Password?</Text>
+          </Pressable>
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('SignUpScreen')}
+          >
+            Don't have an account? Sign up
+          </Text>
+        </View>
+        <UniversalAlert
+          visible={alertVisible}
+          onClose={() => setAlertVisible(false)}
+          message={alertMessage}
+          success={alertSuccess}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#666" // Explicitly set placeholder text color
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize="none"
-        />
-        <Pressable style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </Pressable>
-        <Pressable
-          style={styles.forgotPasswordLink}
-          onPress={() => navigation.navigate('ForgotPasswordScreen')}
-        >
-          <Text style={styles.link}>Forgot Password?</Text>
-        </Pressable>
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate('signup')}
-        >
-          Don't have an account? Sign up
-        </Text>
-      </View>
-      <UniversalAlert
-        visible={alertVisible}
-        onClose={() => setAlertVisible(false)}
-        message={alertMessage}
-        success={alertSuccess}
-      />
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // Ensures the background image covers the entire screen
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundImage: "url('../assets/images/background.jpg')",
   },
   inner: {
-    width: '100%',
+    width: '100%',  
     maxWidth: 500,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 1)', // Semi-transparent white background for the inner content
     borderRadius: 10,
     padding: 20,
     shadowColor: '#000',
@@ -133,7 +148,7 @@ const styles = StyleSheet.create({
     width: '100%',
     color: '#333', // Ensure input text color is visible
   },
-  button: {
+  button: { 
     backgroundColor: '#1e90ff',
     borderRadius: 8,
     paddingVertical: 10,

@@ -1,28 +1,28 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+// app/tabs/_layout.tsx
+import React, { useContext } from 'react';
+import { Platform } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import AuthContext from '../../context/AuthContext';
+import TopTabs from '../../navigation/TopTabs';  // Make sure the path is correct
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Drawer = createDrawerNavigator();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function AppNavigation() {
+    const { isLoggedIn } = useContext(AuthContext);
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
+    if (!isLoggedIn) {
+        return null; // Hide navigation if not logged in
+    }
+
+    // Use top tabs for web and desktop platforms, and a drawer for mobile platforms
+    if (Platform.OS === 'web' || Platform.OS === 'windows' || Platform.OS === 'macos') {
+        return <TopTabs />;
+    } else {
+        return (
+            <Drawer.Navigator initialRouteName="Menu">
+                <Drawer.Screen name="Menu" component={TopTabs} options={{ title: 'Menu' }} />
+                {/* Additional screens can be added here if needed */}
+            </Drawer.Navigator>
+        );
+    }
 }
