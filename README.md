@@ -1,6 +1,10 @@
 # Groundio
 Cross-platform app for booking stadiums and grounds, built with React Native and Firebase. Users can browse, book, and manage sports venues in real-time with secure payments via Stripe. The app provides a seamless experience across Android, iOS, and web, offering real-time updates and user-friendly features.
 
+## Please refer to "master" branch for Srihaas code
+### everyone please create your separate branches thank you.
+
+
 
 ### Install Dependencies
 
@@ -27,5 +31,3 @@ react-native-ui-datepicker@^2.0.3 \
 react-toastify@^10.0.5
 ```
 
-# Please refer to "master" branch for Srihaas code
-## everyone please create your seperate branches thank you.
