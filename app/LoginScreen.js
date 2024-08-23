@@ -8,11 +8,13 @@ import {
   Pressable,
   Platform,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import UniversalAlert from '../components/AlertDialog';
+
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -20,6 +22,7 @@ export default function LoginScreen() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSuccess, setAlertSuccess] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigation = useNavigation();
 
   const showMessage = (message, success = false) => {
@@ -39,6 +42,7 @@ export default function LoginScreen() {
       return;
     }
 
+    setLoading(true); // Set loading to true when starting login
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -50,12 +54,14 @@ export default function LoginScreen() {
       }
     } catch (error) {
       showMessage(error.message, false);
+    } finally {
+      setLoading(false); // Reset loading state after login attempt
     }
   };
 
   return (
     <ImageBackground
-      source={require('../assets/images/background.jpg')} // Ensure this path is correct
+      source={require('../assets/images/background.jpg')}
       style={styles.background}
     >
       <KeyboardAvoidingView
@@ -81,8 +87,12 @@ export default function LoginScreen() {
             secureTextEntry
             autoCapitalize="none"
           />
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
+          <Pressable style={styles.button} onPress={handleLogin} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
           </Pressable>
           <Pressable
             style={styles.forgotPasswordLink}
@@ -111,19 +121,18 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover', // Ensures the background image covers the entire screen
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundImage: "url('../assets/images/background.jpg')",
   },
   inner: {
-    width: '100%',  
+    width: '100%',
     maxWidth: 500,
-    backgroundColor: 'rgba(255, 255, 255, 1)', // Semi-transparent white background for the inner content
+    backgroundColor: 'rgba(255, 255, 255, 1)',
     borderRadius: 10,
     padding: 20,
     shadowColor: '#000',
@@ -146,9 +155,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     width: '100%',
-    color: '#333', // Ensure input text color is visible
+    color: '#333',
   },
-  button: { 
+  button: {
     backgroundColor: '#1e90ff',
     borderRadius: 8,
     paddingVertical: 10,
