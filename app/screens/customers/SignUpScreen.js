@@ -11,10 +11,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { auth } from '../services/firebase';
-import UniversalAlert from '../components/AlertDialog';
-import DatePickerNative from '../components/DatePickerNative';
-import DatePickerWeb from '../components/DatePickerWeb';
+import { auth } from '../../../services/firebase';
+import UniversalAlert from '../../../components/AlertDialog';
+import DatePickerNative from '../../../components/DatePickerNative';
+import DatePickerWeb from '../../../components/DatePickerWeb';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
 
@@ -93,7 +93,7 @@ export default function SignupScreen() {
       });
 
       showMessage('Sign up successful! A verification email has been sent to your email address. Please verify your email before logging in.', true);
-      setTimeout(() => navigation.navigate('LoginScreen'), 5000);
+      setTimeout(() => navigation.navigate('screens/customers/LoginScreen'), 5000);
     } catch (error) {
       showMessage(error.message);
     }
@@ -183,7 +183,7 @@ export default function SignupScreen() {
           </Text>.
         </Text>
 
-        <Pressable onPress={() => navigation.navigate('LoginScreen')}>
+        <Pressable onPress={() => navigation.navigate('screens/customers/LoginScreen')}>
           <Text style={styles.loginText}>Already registered? Login here</Text>
         </Pressable>
       </View>

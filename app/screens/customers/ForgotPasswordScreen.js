@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import UniversalAlert from '../components/AlertDialog';
+import UniversalAlert from '../../../components/AlertDialog';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -32,7 +32,7 @@ export default function ForgotPasswordScreen() {
     try {
       await sendPasswordResetEmail(auth, email);
       showMessage('Password reset email sent.', true);
-      setTimeout(() => navigation.navigate('Login'), 3000); // Navigate after 3 seconds
+      setTimeout(() => navigation.navigate('screens/customers/LoginScreen'), 3000); // Navigate after 3 seconds
     } catch (error) {
       showMessage(error.message);
     }

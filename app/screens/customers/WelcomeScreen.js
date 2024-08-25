@@ -48,7 +48,7 @@ export default function WelcomeScreen() {
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigation.navigate('LoginScreen');
+      navigation.navigate('screens/customers/LoginScreen');
     } catch (error) {
       showMessage('Failed to log out.', false);
     }

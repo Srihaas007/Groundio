@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../services/firebase';
-import UniversalAlert from '../components/AlertDialog';
+import { db, auth } from '../../../services/firebase';
+import UniversalAlert from '../../../components/AlertDialog';
+import { doc, getDoc } from 'firebase/firestore';
 
 
 export default function LoginScreen() {
@@ -42,28 +43,41 @@ export default function LoginScreen() {
       return;
     }
 
-    setLoading(true); // Set loading to true when starting login
+    setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      if (user.emailVerified) {
-        navigation.navigate('screens/customers/WelcomeScreen');
-      } else {
-        showMessage('Please verify your email before logging in.', false);
-      }
+        // Fetch user role from Firestore
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userData = userDoc.data();
+
+        if (!userData) {
+            showMessage('User data not found.');
+            return;
+        }
+
+        // Check if the role is 'customer'
+        if (userData.role !== 'customer') {
+            showMessage('You do not have access to this role.', false);
+            setLoading(false);
+            return;
+        }
+
+        if (user.emailVerified) {
+            navigation.navigate('screens/customers/WelcomeScreen');
+        } else {
+            showMessage('Please verify your email before logging in.', false);
+        }
     } catch (error) {
-      showMessage(error.message, false);
+        showMessage(error.message, false);
     } finally {
-      setLoading(false); // Reset loading state after login attempt
+        setLoading(false);
     }
-  };
+};
 
   return (
-    <ImageBackground
-      source={require('../assets/images/background.jpg')}
-      style={styles.background}
-    >
+    
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
@@ -96,15 +110,21 @@ export default function LoginScreen() {
           </Pressable>
           <Pressable
             style={styles.forgotPasswordLink}
-            onPress={() => navigation.navigate('ForgotPasswordScreen')}
+            onPress={() => navigation.navigate('screens/customers/ForgotPasswordScreen')}
           >
             <Text style={styles.link}>Forgot Password?</Text>
           </Pressable>
           <Text
             style={styles.link}
-            onPress={() => navigation.navigate('SignUpScreen')}
+            onPress={() => navigation.navigate('screens/customers/SignUpScreen')}
           >
             Don't have an account? Sign up
+          </Text>
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('screens/merchant/MSignUpScreen')} // Ensure this navigation point is set up in your routing
+          >
+            Become a Merchant
           </Text>
         </View>
         <UniversalAlert
@@ -114,7 +134,7 @@ export default function LoginScreen() {
           success={alertSuccess}
         />
       </KeyboardAvoidingView>
-    </ImageBackground>
+
   );
 }
 

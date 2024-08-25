@@ -18,7 +18,7 @@ export default function Notification() {
   };
 
   const handleNavigateToProfile = () => {
-    navigation.navigate('ProfileScreen'); // Adjust based on your navigation setup
+    navigation.navigate('screens/customers/ProfileScreen'); // Adjust based on your navigation setup
   };
 
   return (

@@ -67,7 +67,7 @@ export default function ProfileScreen() {
               await deleteDoc(userRef);
               // Add more cleanup tasks here if needed
               await auth.currentUser.delete();
-              navigation.replace('LoginScreen'); // Navigate to login or initial screen after account deletion
+              navigation.replace('screens/customers/LoginScreen'); // Navigate to login or initial screen after account deletion
             } catch (error) {
               console.error('Failed to delete account:', error);
               Alert.alert('Error', 'Failed to delete account.');
