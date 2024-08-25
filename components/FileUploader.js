@@ -1,10 +1,9 @@
-// components/FileUploader.js
 import React, { useState } from 'react';
 import { View, Text, Button, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import * as firebase from 'firebase'; // Adjust based on your Firebase import method
+import firebase from 'firebase'; // Adjust based on your Firebase import method
 
 const FileUploader = () => {
   const [files, setFiles] = useState([]);
@@ -15,8 +14,8 @@ const FileUploader = () => {
         type: ['image/*', 'application/pdf'],
         multiple: true
       });
-      if (result.type === 'success') {
-        setFiles(result.files || [result]);
+      if (result.type !== 'cancel') {
+        setFiles(result.files ? result.files.map(file => ({ uri: file.uri, name: file.name })) : [{ uri: result.uri, name: result.name }]);
         console.log('Files selected:', result.files ? result.files.map(file => file.name) : [result.name]);
       }
     } catch (error) {
@@ -32,15 +31,9 @@ const FileUploader = () => {
 
     let result = await ImagePicker.launchCameraAsync(options);
     if (!result.cancelled) {
-      setFiles(prevFiles => [...prevFiles, result.uri]);
+      setFiles(prevFiles => [...prevFiles, { uri: result.uri, name: 'CapturedImage.jpg' }]);
       console.log('Photo captured:', result.uri);
     }
-  };
-
-  const handleFileSelectWeb = event => {
-    const selectedFiles = Array.from(event.target.files);
-    setFiles(selectedFiles);
-    console.log('Files selected:', selectedFiles.map(file => file.name));
   };
 
   const handleFileUpload = async () => {
@@ -51,10 +44,10 @@ const FileUploader = () => {
 
     try {
       for (let file of files) {
-        const filename = `${firebase.auth().currentUser.uid}/${Date.now()}_${file.name || file.fileName}`;
+        const filename = `${firebase.auth().currentUser.uid}/${Date.now()}_${file.name}`;
         const storageRef = firebase.storage().ref().child(filename);
 
-        const response = await fetch(file.uri || file.path);
+        const response = await fetch(file.uri);
         const blob = await response.blob();
         await storageRef.put(blob);
 
@@ -79,7 +72,7 @@ const FileUploader = () => {
           <Button title="Capture Photo" onPress={handlePhotoCapture} />
         </View>
       )}
-      {files.length > 0 && <Text>Files ready to upload: {files.map(file => file.name || file.fileName).join(', ')}</Text>}
+      {files.length > 0 && <Text>Files ready to upload: {files.map(file => file.name).join(', ')}</Text>}
       <Button title="Upload Files" onPress={handleFileUpload} disabled={files.length === 0} />
     </View>
   );

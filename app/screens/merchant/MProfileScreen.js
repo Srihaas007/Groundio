@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, db, storage } from '../../../services/firebase'; // Ensure this path is correct
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import * as ImagePicker from 'expo-image-picker';
 import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
 import UniversalAlert from '../../../components/AlertDialog';
 import DatePickerNative from '../../../components/DatePickerNative';
@@ -57,10 +58,10 @@ const MerchantProfileScreen = () => {
   const [alertSuccess, setAlertSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const handleSendOtp = async () => {
     if (!validateMobile(profile.mobile)) {
-      showMessage('Invalid mobile number. It should be 10 digits.');
+      setAlertMessage('Invalid mobile number. It should be 10 digits.');
+      setAlertVisible(true);
       return;
     }
     // Implement OTP sending logic here
@@ -132,29 +133,21 @@ const MerchantProfileScreen = () => {
   };
 
   const handleImagePicker = async () => {
-    if (Platform.OS === 'web') {
-      // Handle web-specific image selection (e.g., using a file input element)
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-          setProfile((prev) => ({ ...prev, profilePicture: reader.result }));
-        };
-        reader.readAsDataURL(file);
-      };
-      input.click();
-    } else {
-      const ImagePicker = require('react-native-image-picker');
-      const options = { mediaType: 'photo' };
-      ImagePicker.launchImageLibrary(options, (response) => {
-        if (!response.didCancel && !response.error && response.assets && response.assets.length > 0) {
-          const uri = response.assets[0].uri;
-          setProfile((prev) => ({ ...prev, profilePicture: uri }));
-        }
-      });
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfile((prev) => ({ ...prev, profilePicture: result.assets[0].uri }));
     }
   };
 
@@ -272,11 +265,9 @@ const MerchantProfileScreen = () => {
           onAddressChange={(field, value) => handleAddressChange('home', field, value)}
         />
 
-
-      <Text>Same as Home Address</Text>
-      <CustomCheckbox value={sameAddress} onValueChange={toggleSameAddress} />
+        <Text>Same as Home Address</Text>
+        <CustomCheckbox value={sameAddress} onValueChange={toggleSameAddress} />
     
-
         {!sameAddress && (
           <>
             <Text style={styles.label}>Business Address</Text>
@@ -342,7 +333,7 @@ const MerchantProfileScreen = () => {
           value={profile.email}
           editable={false}
         />
-      <Text>Date of Birth</Text>
+        <Text>Date of Birth</Text>
         {Platform.OS === 'web' ? (
           <DatePickerWeb selectedDate={profile.dob} onDateChange={onDateChange} />
         ) : (
@@ -350,32 +341,32 @@ const MerchantProfileScreen = () => {
         )}
 
         <TextInput
-        style={styles.input}
-        placeholder="Mobile Number"
-        placeholderTextColor="#666"
-        keyboardType="phone-pad"
-        value={profile.mobile}
-        onChangeText={(text) => setProfile((prev) => ({ ...prev, mobile: text }))}
-      />
+          style={styles.input}
+          placeholder="Mobile Number"
+          placeholderTextColor="#666"
+          keyboardType="phone-pad"
+          value={profile.mobile}
+          onChangeText={(text) => setProfile((prev) => ({ ...prev, mobile: text }))}
+        />
       
-      {otpSent ? (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter OTP"
-            placeholderTextColor="#666"
-            value={profile.otp}
-            onChangeText={(text) => setProfile((prev) => ({ ...prev, otp: text }))}
-          />
-          <TouchableOpacity style={styles.button} onPress={handleVerifyOtp}>
-            <Text style={styles.buttonText}>Verify OTP</Text>
+        {otpSent ? (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter OTP"
+              placeholderTextColor="#666"
+              value={profile.otp}
+              onChangeText={(text) => setProfile((prev) => ({ ...prev, otp: text }))}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleVerifyOtp}>
+              <Text style={styles.buttonText}>Verify OTP</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleSendOtp}>
+            <Text style={styles.buttonText}>Send OTP</Text>
           </TouchableOpacity>
-        </>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleSendOtp}>
-          <Text style={styles.buttonText}>Send OTP</Text>
-        </TouchableOpacity>
-      )}
+        )}
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
           <Text style={styles.buttonText}>Save Profile</Text>
