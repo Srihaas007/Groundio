@@ -19,6 +19,8 @@ import UniversalAlert from '../../../components/AlertDialog';
 import DatePickerNative from '../../../components/DatePickerNative';
 import DatePickerWeb from '../../../components/DatePickerWeb';
 import CustomCheckbox from '../../../components/CustomCheckbox';
+import ProfileImageUploader from '../../../components/ProfileImageUploader';
+
 
 const MerchantProfileScreen = () => {
   const navigation = useNavigation();
@@ -43,7 +45,7 @@ const MerchantProfileScreen = () => {
     panNumber: '',
     profilePicture: null,
     email: '', 
-    dob: null,
+    dob: new Date(),
     mobile: '',
     otp: '',
   });  
@@ -80,11 +82,15 @@ const MerchantProfileScreen = () => {
         const profileDocRef = doc(db, 'Merchants', user.uid);
         const profileDoc = await getDoc(profileDocRef);
         if (profileDoc.exists()) {
-          setProfile(profileDoc.data());
+          const fetchedProfile = profileDoc.data();
+          setProfile({
+            ...fetchedProfile,
+            dob: fetchedProfile.dob ? new Date(fetchedProfile.dob) : new Date(),  // Convert dob to Date object
+          });
         }
       }
       setLoading(false);
-    };
+    };    
     fetchProfile();
   }, []);
 
@@ -118,6 +124,7 @@ const MerchantProfileScreen = () => {
         const profileDocRef = doc(db, 'Merchants', user.uid);
         await setDoc(profileDocRef, {
           ...profile,
+          dob: profile.dob.toISOString().split('T')[0],
           profilePicture: profilePictureUrl,
         });
 
@@ -212,26 +219,20 @@ const MerchantProfileScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {loading && <CustomLoadingSpinner />}
-      <UniversalAlert
-        visible={alertVisible}
-        onClose={() => setAlertVisible(false)}
-        message={alertMessage}
-        success={alertSuccess}
-      />
       <View style={styles.inner}>
         <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
 
         <View style={styles.profileImageContainer}>
-          <TouchableOpacity onPress={handleImagePicker}>
-            <Image
-              source={{ uri: profile.profilePicture || 'https://randomuser.me/api/portraits/men/1.jpg' }}
-              style={styles.profileImage}
-            />
-            <Text style={styles.editIcon}>✎</Text>
-          </TouchableOpacity>
+          <ProfileImageUploader onImageSelected={(uri) => setProfile((prev) => ({ ...prev, profilePicture: uri }))} />
+          <Image
+            source={{ uri: profile.profilePicture || 'https://randomuser.me/api/portraits/men/1.jpg' }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.editIcon}>✎</Text>
         </View>
+
 
         <Text style={styles.title}>Profile</Text>
         <Text style={styles.progress}>Profile Completion: {Math.round(progress)}%</Text>
@@ -333,12 +334,14 @@ const MerchantProfileScreen = () => {
           value={profile.email}
           editable={false}
         />
-        <Text>Date of Birth</Text>
-        {Platform.OS === 'web' ? (
-          <DatePickerWeb selectedDate={profile.dob} onDateChange={onDateChange} />
-        ) : (
-          <DatePickerNative selectedDate={profile.dob} onDateChange={onDateChange} />
-        )}
+        <View style={styles.dobContainer}>
+          <Text style={styles.label}>Date of Birth:</Text>
+          {Platform.OS === 'web' ? (
+            <DatePickerWeb selectedDate={profile.dob} onDateChange={(date) => setProfile((prev) => ({ ...prev, dob: date }))} />
+          ) : (
+            <DatePickerNative selectedDate={profile.dob} onDateChange={(date) => setProfile((prev) => ({ ...prev, dob: date }))} />
+          )}
+        </View>
 
         <TextInput
           style={styles.input}
@@ -372,6 +375,12 @@ const MerchantProfileScreen = () => {
           <Text style={styles.buttonText}>Save Profile</Text>
         </TouchableOpacity>
       </View>
+      <UniversalAlert
+        visible={alertVisible}
+        onClose={() => setAlertVisible(false)}
+        message={alertMessage}
+        success={alertSuccess}
+      />
     </ScrollView>
   );
 };

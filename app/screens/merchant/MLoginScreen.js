@@ -47,13 +47,14 @@ export default function MerchantLoginScreen() {
         const userData = userDoc.data();
 
         if (!userData) {
-            showMessage('User data not found.');
+            showMessage('Login Failed. User data not found. Please ensure that you have registered as a merchant.', false);
+            setLoading(false);
             return;
         }
 
         // Check if the role is 'merchant'
         if (userData.role !== 'merchant') {
-            showMessage('You do not have access to this role.', false);
+            showMessage('You do not have access to this role. Please log in with the correct account.', false);
             setLoading(false);
             return;
         }
@@ -64,11 +65,40 @@ export default function MerchantLoginScreen() {
             showMessage('Please verify your email before logging in.', false);
         }
     } catch (error) {
-        showMessage(error.message, false);
+        handleFirebaseError(error.code);
     } finally {
         setLoading(false);
     }
 };
+
+const handleFirebaseError = (errorCode) => {
+    switch (errorCode) {
+        case 'auth/invalid-email':
+            showMessage('The email address is not valid. Please enter a valid email.', false);
+            break;
+        case 'auth/user-disabled':
+            showMessage('This account has been disabled. Please contact support.', false);
+            break;
+        case 'auth/user-not-found':
+            showMessage('No account found with this email. Please check the email or register a new account.', false);
+            break;
+        case 'auth/wrong-password':
+            showMessage('Incorrect password. Please try again or reset your password.', false);
+            break;
+        case 'auth/network-request-failed':
+            showMessage('Network error. Please check your connection and try again.', false);
+            break;
+        case 'auth/too-many-requests':
+            showMessage('Too many login attempts. Please try again later.', false);
+            break;
+        case 'auth/invalid-credential':
+            showMessage('Username or password doesn\'t match. Please try again.', false);
+            break;
+        default:
+            showMessage('An unexpected error occurred. Please try again.', false);
+    }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

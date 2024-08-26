@@ -3,12 +3,14 @@ import { View, Text, TextInput, StyleSheet, Pressable, KeyboardAvoidingView, Pla
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import UniversalAlert from '../../../components/AlertDialog';
+import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner'; // Import the spinner component
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSuccess, setAlertSuccess] = useState(false);
+  const [loading, setLoading] = useState(false); // State to track loading
 
   const navigation = useNavigation();
   const auth = getAuth();
@@ -29,12 +31,34 @@ export default function ForgotPasswordScreen() {
       return;
     }
 
+    setLoading(true); // Start loading
     try {
       await sendPasswordResetEmail(auth, email);
-      showMessage('Password reset email sent.', true);
-      setTimeout(() => navigation.navigate('screens/customers/LoginScreen'), 3000); // Navigate after 3 seconds
+      setLoading(false); // Stop loading
+      showMessage('If you have an account, you will receive an email with a link to reset your password.', true);
+      setTimeout(() => navigation.navigate('screens/customers/LoginScreen'), 2500); // Navigate after 3 seconds
     } catch (error) {
-      showMessage(error.message);
+      setLoading(false); // Stop loading on error
+      const errorCode = error.code;
+      switch (errorCode) {
+        case 'auth/invalid-email':
+          showMessage('The email address is not valid. Please enter a valid email.', false);
+          break;
+        case 'auth/user-disabled':
+          showMessage('This account has been disabled. Please contact support.', false);
+          break;
+        case 'auth/user-not-found':
+          showMessage('No account found with this email. Please check the email or register a new account.', false);
+          break;
+        case 'auth/network-request-failed':
+          showMessage('Network error. Please check your connection and try again.', false);
+          break;
+        case 'auth/too-many-requests':
+          showMessage('Too many attempts. Please try again later.', false);
+          break;
+        default:
+          showMessage('An unexpected error occurred. Please try again.', false);
+      }
     }
   };
 
@@ -44,25 +68,31 @@ export default function ForgotPasswordScreen() {
       style={styles.container}
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>Forgot Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          placeholderTextColor="#666"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Pressable style={styles.button} onPress={handleResetPassword}>
-          <Text style={styles.buttonText}>Send Reset Email</Text>
-        </Pressable>
-        <Pressable
-          style={styles.link}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.linkText}>Back to Login</Text>
-        </Pressable>
+        {loading ? ( // Conditionally render spinner or form
+          <CustomLoadingSpinner />
+        ) : (
+          <>
+            <Text style={styles.title}>Forgot Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              placeholderTextColor="#666"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Pressable style={styles.button} onPress={handleResetPassword}>
+              <Text style={styles.buttonText}>Send Reset Email</Text>
+            </Pressable>
+            <Pressable
+              style={styles.link}
+              onPress={() => navigation.goBack()}
+            >
+              <Text style={styles.linkText}>Back to Login</Text>
+            </Pressable>
+          </>
+        )}
       </View>
       <UniversalAlert
         visible={alertVisible}
@@ -78,7 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#f8f8f8', // Light background color
+    backgroundColor: '#f8f8f8',
     padding: 20,
   },
   inner: {
@@ -99,7 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333', // Darker color for the title
+    color: '#333',
   },
   input: {
     height: 50,

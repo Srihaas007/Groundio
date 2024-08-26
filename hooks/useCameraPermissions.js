@@ -1,48 +1,70 @@
-// hooks/useCameraPermissions.js
 import { useState, useEffect } from 'react';
-import { Alert, Platform } from 'react-native';
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
-const useCameraPermissions = () => {
-    const [hasPermission, setHasPermission] = useState(null);
+const usePermissions = () => {
+    const [cameraPermission, setCameraPermission] = useState(null);
+    const [mediaLibraryPermission, setMediaLibraryPermission] = useState(null);
 
     useEffect(() => {
-        const requestCameraPermission = async () => {
-            let permissionResult;
+        const requestPermissions = async () => {
+            const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+            const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-            if (Platform.OS === 'android') {
-                // Show an alert or some form of UI to inform the user
-                Alert.alert("Permission Request", "This app needs camera access to take pictures",
+            if (cameraStatus !== 'granted') {
+                Alert.alert(
+                    "Permission Request",
+                    "This app needs camera access to take pictures.",
                     [
                         {
                             text: "Cancel",
-                            onPress: () => setHasPermission(false),
+                            onPress: () => setCameraPermission(false),
                             style: "cancel"
                         },
-                        { text: "OK", onPress: () => requestPermission(PERMISSIONS.ANDROID.CAMERA) }
+                        {
+                            text: "OK",
+                            onPress: async () => {
+                                const { status: newCameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+                                setCameraPermission(newCameraStatus === 'granted');
+                            }
+                        }
                     ],
                     { cancelable: false }
                 );
-            } else if (Platform.OS === 'ios') {
-                permissionResult = await request(PERMISSIONS.IOS.CAMERA);
-                setHasPermission(permissionResult === RESULTS.GRANTED);
+            } else {
+                setCameraPermission(true);
+            }
+
+            if (libraryStatus !== 'granted') {
+                Alert.alert(
+                    "Permission Request",
+                    "This app needs access to your photo library to upload images.",
+                    [
+                        {
+                            text: "Cancel",
+                            onPress: () => setMediaLibraryPermission(false),
+                            style: "cancel"
+                        },
+                        {
+                            text: "OK",
+                            onPress: async () => {
+                                const { status: newLibraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                                setMediaLibraryPermission(newLibraryStatus === 'granted');
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                setMediaLibraryPermission(true);
             }
         };
 
-        const requestPermission = async (permissionType) => {
-            try {
-                let permissionResult = await request(permissionType);
-                setHasPermission(permissionResult === RESULTS.GRANTED);
-            } catch (error) {
-                console.warn("Permission request error:", error);
-                setHasPermission(false);
-            }
-        };
-
-        requestCameraPermission();
+        requestPermissions();
     }, []);
 
-    return hasPermission;
+    return { cameraPermission, mediaLibraryPermission };
 };
 
-export default useCameraPermissions;
+export default usePermissions;

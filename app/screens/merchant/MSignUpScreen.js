@@ -52,6 +52,7 @@ const MerchantSignupScreen = () => {
     }
 };
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
 
   const showMessage = (message, success = false) => {
     setAlertMessage(message);
@@ -63,6 +64,13 @@ const MerchantSignupScreen = () => {
     if (!businessName || !ownerName || !mobile || !email || !password || !retypePassword) {
         showMessage('Please fill in all fields.');
         return;
+    }
+
+    
+
+    if (!passwordRegex.test(password)) {
+      showMessage('Password must be at least 9 characters long, include uppercase letters, a number, and a special character.');
+      return;
     }
 
     if (!validateEmail(email)) {
@@ -220,6 +228,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
+  },
+  loginText: {
+    color: '#1e90ff',   // Blue color to resemble a link
+    textDecorationLine: 'underline',  // Underline to give it a link appearance
+    textAlign: 'center', // Optional, center-align text
+    marginTop: 10, // Optional, space out from other elements
   },
 });
 
