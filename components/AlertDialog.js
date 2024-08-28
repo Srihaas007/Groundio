@@ -45,7 +45,7 @@ const UniversalAlert = ({ visible, onClose, message, success }) => {
       <Text style={styles.messageText}>
         {message || (success ? "Success!" : "Something went wrong!")}
       </Text>
-      { !autoClose && (
+      {!autoClose && (
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>{success ? "Okay" : "Can Do!"}</Text>
         </TouchableOpacity>
@@ -80,10 +80,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    zIndex: 1000, // Ensure it's on top
   },
   alertContainer: {
     width: '80%',
-    padding: 25,
+    maxWidth: 400, // Ensure the alert box doesn't get too wide
+    padding: 20,
     backgroundColor: '#fff',
     borderRadius: 20,
     alignItems: 'center',
@@ -92,18 +94,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
+    boxSizing: 'border-box', // Ensure consistent box model on web
+    zIndex: 1001, // Ensure it stays above other elements
   },
   lottieContainer: {
-    width: 150,
-    height: 150,
+    width: 120, // Reduced size for better fit on small screens
+    height: 120,
     marginBottom: 15,
+    zIndex: 1002, // Layer it above the container background
   },
   lottie: {
     width: '100%',
     height: '100%',
   },
   messageText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     color: '#333',
     marginBottom: 20,
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
   closeButton: {
     backgroundColor: '#ff9800',
     paddingVertical: 10,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     borderRadius: 25,
   },
   closeButtonText: {
@@ -130,6 +135,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    overflow: 'hidden', // Prevent any scroll bars from appearing
+    zIndex: 1000, // Ensure it's on top
   },
 });
 
