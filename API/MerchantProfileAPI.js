@@ -2,8 +2,8 @@ import { auth, db, storage } from '../services/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator'; // Import expo-image-manipulator
 import { Alert } from 'react-native';
-
 
 // Fetch profile data from Firestore
 export const fetchProfile = async () => {
@@ -22,13 +22,29 @@ export const fetchProfile = async () => {
     return null;
 };
 
+// Compress image before upload using expo-image-manipulator
+const compressImage = async (uri) => {
+    try {
+        const manipResult = await ImageManipulator.manipulateAsync(
+            uri,
+            [],
+            { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG } // Compress to 50% quality, change as needed
+        );
+        return manipResult.uri;
+    } catch (error) {
+        console.error('Error compressing image:', error);
+        return uri; // Return original URI in case of an error
+    }
+};
+
 // Save profile data to Firestore, including profile picture
 export const saveProfile = async (profile) => {
     const user = auth.currentUser;
     if (user) {
         try {
             const uploadImage = async (imageUri, imageName) => {
-                const response = await fetch(imageUri);
+                const compressedUri = await compressImage(imageUri); // Compress image before upload
+                const response = await fetch(compressedUri);
                 const blob = await response.blob();
                 const imageRef = ref(storage, `profiles/${user.uid}/${imageName}`);
                 await uploadBytes(imageRef, blob);
@@ -134,6 +150,7 @@ export const handleSelectFromLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
+        exif: false, // Disable EXIF metadata if you don't need it
     });
 
     console.log("Library result:", result);

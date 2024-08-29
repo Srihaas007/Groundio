@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -80,7 +80,6 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Background>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={{ flex: 1 }}>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="screens/customers/LoginScreen" component={LoginScreen} />
@@ -101,7 +100,6 @@ export default function RootLayout() {
               <Stack.Screen name="screens/merchant/MViewOrders" component={MViewOrders} />
             </Stack.Navigator>
           </View>
-        </ScrollView>
       </Background>
     </ThemeProvider>
   );

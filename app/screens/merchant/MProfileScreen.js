@@ -11,7 +11,7 @@ import {
   ActionSheetIOS,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import * as api from '../../../API/MerchantProfile'; // Adjust the import path as needed
+import * as api from '../../../API/MerchantProfileAPI'; // Adjust the import path as needed
 import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
 import UniversalAlert from '../../../components/AlertDialog';
 import DatePickerNative from '../../../components/DatePickerNative';
@@ -62,9 +62,6 @@ const MerchantProfileScreen = () => {
   const [alertSuccess, setAlertSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  // Remove this line if not using profilePictureUri anywhere
-  // const [profilePictureUri, setProfilePictureUri] = useState(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -120,7 +117,6 @@ const MerchantProfileScreen = () => {
       if (selectedImageUri) {
           console.log("Image selected:", selectedImageUri);
           setProfile((prev) => ({ ...prev, profilePicture: selectedImageUri })); // Store the selected image URI in profile
-         
       } else {
           console.log("No image URI returned or operation canceled.");
       }
