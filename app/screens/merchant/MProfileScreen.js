@@ -63,6 +63,7 @@ const MerchantProfileScreen = () => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       setLoading(true);
@@ -138,34 +139,39 @@ const MerchantProfileScreen = () => {
 
   const handleProfilePictureClick = () => {
     console.log("Profile picture click...");
-    if (Platform.OS === 'ios') {
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options: ["Take a Picture", "Choose from Library", "Cancel"],
-                cancelButtonIndex: 2,
-            },
-            (buttonIndex) => {
-                console.log("ActionSheet option selected:", buttonIndex);
-                if (buttonIndex === 0) {
-                    handleOptionSelect('camera');
-                } else if (buttonIndex === 1) {
-                    handleOptionSelect('mediaLibrary');
-                }
-            }
-        );
+    if (Platform.OS === 'web') {
+      setAlertMessage("Sorry, you can only upload your profile picture through our mobile app.");
+      setAlertSuccess(false);
+      setAlertVisible(true);
+    } else if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["Take a Picture", "Choose from Library", "Cancel"],
+          cancelButtonIndex: 2,
+        },
+        (buttonIndex) => {
+          console.log("ActionSheet option selected:", buttonIndex);
+          if (buttonIndex === 0) {
+            handleOptionSelect('camera');
+          } else if (buttonIndex === 1) {
+            handleOptionSelect('mediaLibrary');
+          }
+        }
+      );
     } else {
-        Alert.alert(
-            "Select Option",
-            "Choose an option to update your profile picture",
-            [
-                { text: "Take a Picture", onPress: () => handleOptionSelect('camera') },
-                { text: "Choose from Library", onPress: () => handleOptionSelect('mediaLibrary') },
-                { text: "Cancel", onPress: () => {}, style: "cancel" }
-            ],
-            { cancelable: true }
-        );
+      Alert.alert(
+        "Select Option",
+        "Choose an option to update your profile picture",
+        [
+          { text: "Take a Picture", onPress: () => handleOptionSelect('camera') },
+          { text: "Choose from Library", onPress: () => handleOptionSelect('mediaLibrary') },
+          { text: "Cancel", onPress: () => {}, style: "cancel" }
+        ],
+        { cancelable: true }
+      );
     }
   };
+
 
   const handleAddressChange = (type, field, value) => {
     if (type === 'home') {

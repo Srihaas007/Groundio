@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
@@ -7,7 +7,6 @@ import 'react-native-reanimated';
 import Background from '../components/Background';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useColorScheme } from '../hooks/useColorScheme';
-
 import LoginScreen from './screens/customers/LoginScreen';
 import SignUpScreen from './screens/customers/SignUpScreen';
 import ProfileScreen from './screens/customers/ProfileScreen';
@@ -27,6 +26,7 @@ import TermsScreen from './TermsScreen';
 import CustomLoadingSpinner from '../components/CustomLoadingSpinner';
 import AnimatedSplashScreen from '../components/AnimatedSplashScreen';
 import WebSplashScreen from '../components/WebSplashScreen'; // Import the web splash screen component
+
 
 const Stack = createStackNavigator();
 

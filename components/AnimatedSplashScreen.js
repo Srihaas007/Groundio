@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Image, StyleSheet, Animated } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 // Basic AnimatedSplashScreen component
@@ -35,7 +35,11 @@ const AnimatedSplashScreen = ({ onAnimationFinish }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.animatedContainer, { opacity }]}>
-        <Text style={styles.text}>Groundio</Text>
+        <Image
+          source={require('../assets/images/logo.jpg')}
+          style={styles.image}
+          resizeMode="contain"
+        />
       </Animated.View>
     </View>
   );
@@ -52,9 +56,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  image: {
+    width: 200, // Adjust the size of the image as needed
+    height: 200,
   },
 });
 
