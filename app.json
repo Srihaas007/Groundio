@@ -1,41 +1,141 @@
 {
   "expo": {
     "name": "Groundio",
-    "slug": "Groundio",
+    "slug": "groundio-stadium-booking",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "groundio",
     "userInterfaceStyle": "automatic",
     "splash": {
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#4A90E2"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.groundio",
+      "bundleIdentifier": "com.groundio.stadiumboking",
+      "buildNumber": "1",
       "splash": {
         "image": "./assets/images/splash.png",
         "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#4A90E2",
+        "tabletImage": "./assets/images/splash-tablet.png"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses location to find nearby venues.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses location to find nearby venues.",
+        "NSCameraUsageDescription": "This app uses camera to take photos for profile and venue images.",
+        "NSPhotoLibraryUsageDescription": "This app uses photo library to select images for profile and venues."
+      },
+      "config": {
+        "googleMapsApiKey": "YOUR_GOOGLE_MAPS_API_KEY"
       }
     },
     "android": {
+      "package": "com.groundio.stadiumboking",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#4A90E2"
+      },
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#4A90E2",
+        "mdpi": "./assets/images/splash-mdpi.png",
+        "hdpi": "./assets/images/splash-hdpi.png",
+        "xhdpi": "./assets/images/splash-xhdpi.png",
+        "xxhdpi": "./assets/images/splash-xxhdpi.png",
+        "xxxhdpi": "./assets/images/splash-xxxhdpi.png"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
+        }
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "Groundio - Stadium Booking",
+      "shortName": "Groundio",
+      "lang": "en",
+      "scope": "/",
+      "themeColor": "#4A90E2",
+      "backgroundColor": "#ffffff",
+      "display": "standalone",
+      "orientation": "portrait-primary",
+      "startUrl": "/",
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#4A90E2"
+      },
+      "meta": {
+        "apple-mobile-web-app-capable": "yes",
+        "apple-mobile-web-app-status-bar-style": "default",
+        "apple-mobile-web-app-title": "Groundio",
+        "application-name": "Groundio",
+        "msapplication-TileColor": "#4A90E2",
+        "msapplication-tap-highlight": "no",
+        "mobile-web-app-capable": "yes"
+      }
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Groundio to use your location to find nearby venues."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Groundio to access your photos so you can share images of venues."
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#4A90E2",
+          "sounds": [
+            "./assets/sounds/notification.wav"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    },
+    "owner": "srihaas007",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/your-project-id"
     }
   }
 }

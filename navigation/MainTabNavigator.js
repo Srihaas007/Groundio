@@ -1,23 +1,17 @@
-import React, { useContext } from 'react';
-import { Platform } from 'react-native';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AuthProvider, useAuth } from '../../context/AuthContext';
-import HomeScreen from '../screens/customers/HomeScreen';
-import SearchScreen from '../screens/customers/SearchScreen';
-import BookingsScreen from '../screens/customers/BookingsScreen';
-import ProfileScreen from '../screens/customers/ProfileScreen';
-import LoginScreen from '../screens/customers/LoginScreen';
+import { useAuth } from '../context/AuthContext';
+import HomeScreen from '../app/screens/customers/HomeScreen';
+import BookingsScreen from '../app/screens/customers/BookingsScreen';
+import ProfileScreen from '../app/screens/customers/ProfileScreen';
+import SearchScreen from '../app/screens/customers/SearchScreen';
 
 const Tab = createBottomTabNavigator();
 
-function TabNavigator() {
+export default function MainTabNavigator() {
   const { currentUser } = useAuth();
-
-  // If user is not logged in, show login screen
-  if (!currentUser) {
-    return <LoginScreen />;
-  }
 
   return (
     <Tab.Navigator
@@ -66,6 +60,7 @@ function TabNavigator() {
         component={BookingsScreen}
         options={{
           tabBarLabel: 'Bookings',
+          tabBarBadge: null, // You can add booking count here
         }}
       />
       <Tab.Screen 
@@ -76,13 +71,5 @@ function TabNavigator() {
         }}
       />
     </Tab.Navigator>
-  );
-}
-
-export default function TabLayout() {
-  return (
-    <AuthProvider>
-      <TabNavigator />
-    </AuthProvider>
   );
 }
