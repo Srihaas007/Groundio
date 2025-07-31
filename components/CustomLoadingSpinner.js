@@ -1,16 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import LottieView from 'lottie-react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 
-export default function CustomLoadingSpinner() {
+export default function CustomLoadingSpinner({ message = "Loading..." }) {
   return (
     <View style={styles.container}>
-      <LottieView
-        source={require('../assets/animations/loadingspinner.json')} // Ensure this path is correct
-        autoPlay
-        loop
-        style={styles.lottie}
-      />
+      <ActivityIndicator size="large" color="#2E7D32" />
+      <Text style={styles.loadingText}>{message}</Text>
     </View>
   );
 }
@@ -20,9 +15,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f8f9fa',
   },
-  lottie: {
-    width: 150,
-    height: 150,
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
   },
 });

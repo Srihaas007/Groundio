@@ -19,7 +19,7 @@ Cross-platform stadium and ground booking application built with Expo and React 
 - **Navigation**: React Navigation 6
 - **Payments**: Stripe
 - **State Management**: React Context/Redux
-- **Animations**: Lottie React Native
+- **UI Components**: Native React Native components with custom styling
 - **Date/Time**: React Native UI DatePicker
 
 ## 📱 Platform Support
@@ -44,8 +44,7 @@ Cross-platform stadium and ground booking application built with Expo and React 
 
 3. **Install additional required packages**
    ```bash
-   npm install @dotlottie/react-player@^1.6.19 \
-   @expo/vector-icons@^14.0.2 \
+   npm install @expo/vector-icons@^14.0.2 \
    @react-native-async-storage/async-storage@^1.24.0 \
    @react-native-community/checkbox@^0.5.17 \
    @react-native-community/datetimepicker@^8.2.0 \
@@ -55,8 +54,6 @@ Cross-platform stadium and ground booking application built with Expo and React 
    @react-navigation/stack@^6.4.1 \
    date-fns@^3.6.0 \
    firebase@^10.13.0 \
-   lottie-ios@^3.1.8 \
-   lottie-react-native@^6.7.2 \
    react-datepicker@^7.3.0 \
    react-native-reanimated@~3.10.1 \
    react-native-tab-view@^3.5.2 \
