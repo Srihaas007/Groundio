@@ -88,16 +88,26 @@ export const authHelpers = {
   // Sign up with email and password
   signUpWithEmail: async (email, password, displayName) => {
     try {
+      console.log('Attempting signup with email:', email);
+      console.log('Auth object available:', !!auth);
+      
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('User created successfully:', userCredential.user.uid);
       
       // Update display name
       if (displayName) {
         await updateProfile(userCredential.user, { displayName });
+        console.log('Display name updated:', displayName);
       }
       
       return { success: true, user: userCredential.user };
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error('Sign up error details:', {
+        code: error.code,
+        message: error.message,
+        customData: error.customData,
+        stack: error.stack
+      });
       return { success: false, error: getAuthErrorMessage(error) };
     }
   },
@@ -170,7 +180,18 @@ const getAuthErrorMessage = (error) => {
       return 'Sign-in was cancelled.';
     case 'auth/popup-blocked':
       return 'Pop-up was blocked. Please allow pop-ups and try again.';
+    case 'auth/operation-not-allowed':
+      return 'Email/password sign-up is not enabled. Please contact support.';
+    case 'auth/invalid-api-key':
+      return 'Invalid API key. Please check Firebase configuration.';
+    case 'auth/app-deleted':
+      return 'Firebase app has been deleted. Please check configuration.';
+    case 'auth/domain-mismatch':
+      return 'Domain not authorized. Please check Firebase settings.';
+    case 'auth/unauthorized-domain':
+      return 'This domain is not authorized for OAuth operations.';
     default:
+      console.error('Unhandled Firebase Auth error:', error.code, error.message);
       return error.message || 'An unexpected error occurred. Please try again.';
   }
 };
