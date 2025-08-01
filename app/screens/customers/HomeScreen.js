@@ -15,9 +15,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, query, onSnapshot, where, orderBy } from 'firebase/firestore';
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { db } from '../../../services/firebase';
 import { useAuth } from '../../../context/AuthContext';
+import { mockVenues } from '../../../data/mockVenues';
 
 const { width } = Dimensions.get('window');
 
@@ -37,35 +38,55 @@ export default function HomeScreen({ navigation }) {
 
   const fetchVenues = () => {
     try {
+      // Use mock data temporarily to avoid Firebase index issues
+      let venueData = [...mockVenues];
+      
+      if (selectedCategory !== 'All') {
+        venueData = venueData.filter(venue => venue.category === selectedCategory);
+      }
+      
+      // Sort by creation date (newest first)
+      venueData.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      setVenues(venueData);
+      setLoading(false);
+      setRefreshing(false);
+      
+      // Also try to fetch from Firebase as backup
       let venueQuery;
       if (selectedCategory === 'All') {
         venueQuery = query(
           collection(db, 'venues'),
-          where('isActive', '==', true),
-          orderBy('createdAt', 'desc')
+          where('isActive', '==', true)
         );
       } else {
         venueQuery = query(
           collection(db, 'venues'),
           where('isActive', '==', true),
-          where('category', '==', selectedCategory),
-          orderBy('createdAt', 'desc')
+          where('category', '==', selectedCategory)
         );
       }
 
       const unsubscribe = onSnapshot(venueQuery, (snapshot) => {
-        const venueData = [];
+        const firebaseVenueData = [];
         snapshot.forEach((doc) => {
-          venueData.push({ id: doc.id, ...doc.data() });
+          firebaseVenueData.push({ id: doc.id, ...doc.data() });
         });
-        setVenues(venueData);
-        setLoading(false);
-        setRefreshing(false);
+        
+        // If we have Firebase data, use it instead of mock data
+        if (firebaseVenueData.length > 0) {
+          firebaseVenueData.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+          setVenues(firebaseVenueData);
+        }
+      }, (error) => {
+        console.warn('Firebase query failed, using mock data:', error);
       });
 
       return unsubscribe;
     } catch (error) {
       console.error('Error fetching venues:', error);
+      // Fallback to mock data on error
+      setVenues(mockVenues);
       setLoading(false);
       setRefreshing(false);
     }
@@ -76,10 +97,19 @@ export default function HomeScreen({ navigation }) {
     fetchVenues();
   };
 
-  const filteredVenues = venues.filter(venue =>
-    venue.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-    venue.location?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredVenues = venues.filter(venue => {
+    const matchesSearch = searchText === '' || 
+      venue.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+      venue.description?.toLowerCase().includes(searchText.toLowerCase()) ||
+      venue.category?.toLowerCase().includes(searchText.toLowerCase()) ||
+      (typeof venue.location === 'string' && venue.location?.toLowerCase().includes(searchText.toLowerCase())) ||
+      (typeof venue.location === 'object' && (
+        venue.location?.address?.toLowerCase().includes(searchText.toLowerCase()) ||
+        venue.location?.city?.toLowerCase().includes(searchText.toLowerCase())
+      ));
+    
+    return matchesSearch;
+  });
 
   const renderVenueCard = ({ item }) => (
     <TouchableOpacity
@@ -106,7 +136,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.locationRow}>
           <Ionicons name="location-outline" size={14} color="#666" />
           <Text style={styles.venueLocation} numberOfLines={1}>
-            {item.location}
+            {typeof item.location === 'string' ? item.location : item.location?.address || item.location?.city || 'Location not available'}
           </Text>
         </View>
         <View style={styles.venueFooter}>
@@ -268,7 +298,7 @@ export default function HomeScreen({ navigation }) {
                   <View style={styles.locationRow}>
                     <Ionicons name="location" size={14} color="#6B7280" />
                     <Text style={styles.venueLocation} numberOfLines={1}>
-                      {item.location}
+                      {typeof item.location === 'string' ? item.location : item.location?.address || item.location?.city || 'Location not available'}
                     </Text>
                   </View>
                   
