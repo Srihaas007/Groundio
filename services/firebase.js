@@ -86,7 +86,7 @@ export const authHelpers = {
   },
 
   // Sign up with email and password
-  signUpWithEmail: async (email, password, displayName) => {
+  signUpWithEmail: async (email, password, profileData) => {
     try {
       console.log('Attempting signup with email:', email);
       console.log('Auth object available:', !!auth);
@@ -95,9 +95,9 @@ export const authHelpers = {
       console.log('User created successfully:', userCredential.user.uid);
       
       // Update display name
-      if (displayName) {
-        await updateProfile(userCredential.user, { displayName });
-        console.log('Display name updated:', displayName);
+      if (profileData && profileData.displayName) {
+        await updateProfile(userCredential.user, { displayName: profileData.displayName });
+        console.log('Display name updated:', profileData.displayName);
       }
       
       return { success: true, user: userCredential.user };

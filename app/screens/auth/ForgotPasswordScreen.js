@@ -11,12 +11,14 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { authHelpers } from '../../../services/firebase';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  
+  const { resetPassword } = useAuth();
 
   const handleResetPassword = async () => {
     if (!email) {
@@ -31,24 +33,18 @@ export default function ForgotPasswordScreen({ navigation }) {
     }
 
     setIsLoading(true);
-    try {
-      const result = await authHelpers.resetPassword(email);
-      if (result.success) {
-        setEmailSent(true);
-        Alert.alert(
-          'Password Reset Email Sent',
-          'Please check your email for instructions to reset your password.',
-          [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
-        );
-      } else {
-        Alert.alert('Error', result.error);
-      }
-    } catch (error) {
-      console.error('Password reset error:', error);
-      Alert.alert('Error', error.message || 'An error occurred while sending the reset email');
-    } finally {
-      setIsLoading(false);
+    const result = await resetPassword(email);
+    if (result.success) {
+      setEmailSent(true);
+      Alert.alert(
+        'Password Reset Email Sent',
+        'Please check your email for instructions to reset your password.',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+      );
+    } else {
+      Alert.alert('Error', result.error);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -141,13 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
   },
   title: {

@@ -1,4 +1,4 @@
-//context/AuthContext.js
+// context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authHelpers } from '../services/firebase';
 
@@ -7,8 +7,11 @@ const AuthContext = createContext({
   currentUser: null,
   isLoggedIn: false,
   loading: true,
-  signIn: () => {},
-  signOut: () => {},
+  signInWithEmail: async (email, password) => {},
+  signInWithGoogle: async () => {},
+  signUpWithEmail: async (email, password) => {},
+  signOut: async () => {},
+  resetPassword: async (email) => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -24,25 +27,15 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe; // Cleanup subscription
   }, []);
 
-  const signIn = async (user) => {
-    setCurrentUser(user);
-  };
-
-  const signOut = async () => {
-    try {
-      await authHelpers.signOut();
-      setCurrentUser(null);
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
   const value = { 
     currentUser, 
     isLoggedIn: !!currentUser, 
     loading,
-    signIn,
-    signOut
+    signInWithEmail: authHelpers.signInWithEmail,
+    signInWithGoogle: authHelpers.signInWithGoogle,
+    signUpWithEmail: authHelpers.signUpWithEmail,
+    signOut: authHelpers.signOut,
+    resetPassword: authHelpers.resetPassword,
   };
   
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '../../../context/AuthContext';
-import { authHelpers } from '../../../services/firebase';
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -21,6 +20,7 @@ export default function SignUpScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { signUpWithEmail, signInWithGoogle } = useAuth();
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword || !firstName || !lastName) {
@@ -39,32 +39,27 @@ export default function SignUpScreen({ navigation }) {
     }
 
     setIsLoading(true);
-    try {
-      await authHelpers.signUp(email, password, {
-        displayName: `${firstName} ${lastName}`,
-        firstName,
-        lastName,
-      });
-      // Navigation will be handled by the auth context
-    } catch (error) {
-      console.error('SignUp error:', error);
-      Alert.alert('Sign Up Failed', error.message || 'An error occurred during sign up');
-    } finally {
-      setIsLoading(false);
+    const result = await signUpWithEmail(email, password, {
+      displayName: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
+    });
+
+    if (!result.success) {
+      Alert.alert('Sign Up Failed', result.error || 'An error occurred during sign up');
     }
+    // Navigation will be handled by the auth context
+    setIsLoading(false);
   };
 
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
-    try {
-      await authHelpers.signInWithGoogle();
-      // Navigation will be handled by the auth context
-    } catch (error) {
-      console.error('Google sign up error:', error);
-      Alert.alert('Google Sign Up Failed', error.message || 'An error occurred during Google sign up');
-    } finally {
-      setIsLoading(false);
+    const result = await signInWithGoogle();
+    if (!result.success) {
+      Alert.alert('Google Sign Up Failed', result.error || 'An error occurred during Google sign up');
     }
+    // Navigation will be handled by the auth context
+    setIsLoading(false);
   };
 
   return (
@@ -180,13 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
   },
   title: {
