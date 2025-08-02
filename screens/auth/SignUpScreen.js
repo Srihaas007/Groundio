@@ -11,7 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -154,6 +154,16 @@ export default function SignUpScreen({ navigation }) {
                 <Text style={styles.linkText}>Sign In</Text>
               </TouchableOpacity>
             </View>
+            
+            <View style={styles.merchantContainer}>
+              <Text style={styles.footerText}>Want to list your venue? </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('MerchantSignup')}
+                disabled={isLoading}
+              >
+                <Text style={styles.linkText}>Merchant Sign Up</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -181,13 +191,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2c3e50',
+    color: '#1e40af',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#7f8c8d',
+    color: '#666',
     textAlign: 'center',
     marginBottom: 32,
   },
@@ -211,7 +221,7 @@ const styles = StyleSheet.create({
     width: '48%',
   },
   button: {
-    backgroundColor: '#27ae60',
+    backgroundColor: '#1e40af',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
@@ -244,13 +254,17 @@ const styles = StyleSheet.create({
   },
   loginContainer: {
     flexDirection: 'row',
+    marginBottom: 12,
+  },
+  merchantContainer: {
+    flexDirection: 'row',
   },
   footerText: {
-    color: '#7f8c8d',
+    color: '#666',
     fontSize: 14,
   },
   linkText: {
-    color: '#3498db',
+    color: '#1e40af',
     fontSize: 14,
     fontWeight: '600',
   },

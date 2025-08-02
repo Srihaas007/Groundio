@@ -1,9 +1,9 @@
 // navigation/HomeStackNavigator.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../app/screens/customers/HomeScreen';
-import VenueDetailsScreen from '../app/screens/customers/VenueDetailsScreen';
-import Notification from '../app/screens/customers/Notification';
+import HomeScreen from '../screens/customers/HomeScreen';
+import VenueDetailsScreen from '../screens/customers/VenueDetailsScreen';
+import Notification from '../screens/customers/Notification';
 
 const Stack = createStackNavigator();
 

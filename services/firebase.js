@@ -7,16 +7,18 @@ import {
   getReactNativePersistence,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateProfile
+  updateProfile,
+  sendEmailVerification
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { Platform } from 'react-native';
 
 // Your Firebase configuration
@@ -41,14 +43,11 @@ const storage = getStorage(app);
 let auth;
 
 try {
-  // Checking the environment to apply the correct Firebase auth persistence
+  // Initialize auth based on platform
   if (Platform.OS === 'web') {
-    // Web platform
     auth = getAuth(app);
-    auth.setPersistence(browserLocalPersistence)
-      .catch((error) => {
-        console.error('Error setting web persistence:', error);
-      });
+    // Set persistence for web
+    console.log('Initializing Firebase Auth for web platform');
   } else {
     // React Native platform
     try {
@@ -90,6 +89,15 @@ export const authHelpers = {
     try {
       console.log('Attempting signup with email:', email);
       console.log('Auth object available:', !!auth);
+      
+      // Check if email/password sign up is enabled
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
+      
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
       
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log('User created successfully:', userCredential.user.uid);
@@ -196,4 +204,4 @@ const getAuthErrorMessage = (error) => {
   }
 };
 
-export { auth, firestore as db, storage, googleProvider };
+export { auth, firestore as db, firestore, storage, googleProvider, app };

@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function App() {
+export default function SimpleBookingsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello Groundio!</Text>
-      <Text style={styles.subText}>App is working on Web, iOS, and Android</Text>
+      <Text style={styles.title}>Bookings Screen</Text>
+      <Text style={styles.subtitle}>Your bookings will appear here!</Text>
     </View>
   );
 }
@@ -15,15 +15,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
   },
-  text: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 10,
   },
-  subText: {
+  subtitle: {
     fontSize: 16,
     color: '#666',
   },

@@ -16,9 +16,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { collection, query, onSnapshot, where } from 'firebase/firestore';
-import { db } from '../../../services/firebase';
-import { useAuth } from '../../../context/AuthContext';
-import { mockVenues } from '../../../data/mockVenues';
+import { db } from '../../services/firebase';
+import { useAuth } from '../../context/AuthContext';
+import { mockVenues } from '../../data/mockVenues';
 
 const { width } = Dimensions.get('window');
 

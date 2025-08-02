@@ -10,15 +10,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { auth } from '../../../services/firebase';
+import { useAuth } from '../../context/AuthContext';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import { Ionicons } from '@expo/vector-icons';
-import UniversalAlert from '../../../components/AlertDialog';
-import DatePickerNative from '../../../components/DatePickerNative';
-import DatePickerWeb from '../../../components/DatePickerWeb';
+import UniversalAlert from '../../components/AlertDialog';
+import DatePickerNative from '../../components/DatePickerNative';
+import DatePickerWeb from '../../components/DatePickerWeb';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
 
@@ -46,7 +44,7 @@ export default function SignupScreen() {
   const [isLocationLoading, setIsLocationLoading] = useState(false);
 
   const navigation = useNavigation();
-  const db = getFirestore();
+  const { signUpWithEmail } = useAuth();
 
   // Get device and location information on component mount
   useEffect(() => {
@@ -177,28 +175,15 @@ export default function SignupScreen() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Send email verification
-      await sendEmailVerification(user);
-
-      // Get IP address and additional security info
-      const ipAddress = await getIPAddress();
-      
-      // Comprehensive user profile data
-      const userProfile = {
-        uid: user.uid,
-        fullName,
-        email: user.email,
+      // Use AuthContext for signup
+      const result = await signUpWithEmail(email, password, {
+        displayName: fullName,
         mobile,
         dateOfBirth: dob.toISOString(),
         address,
         city,
         pincode,
         emergencyContact,
-        emailVerified: user.emailVerified,
-        
         // Location tracking
         locationInfo: {
           ...locationInfo,
@@ -209,7 +194,6 @@ export default function SignupScreen() {
         // Device fingerprinting
         deviceInfo: {
           ...deviceInfo,
-          ipAddress,
           registrationSource: 'mobile_app',
         },
         
@@ -220,7 +204,6 @@ export default function SignupScreen() {
           loginAttempts: 0,
           accountStatus: 'active',
           twoFactorEnabled: false,
-          emailVerificationSentAt: new Date().toISOString(),
         },
         
         // User preferences and settings
@@ -276,34 +259,25 @@ export default function SignupScreen() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         version: 1,
-      };
+      });
 
-      // Save user profile to Firestore
-      await setDoc(doc(db, 'users', user.uid), userProfile);
+      if (result.success) {
+        showMessage(
+          'Account created successfully! Please check your email to verify your account before logging in.',
+          true
+        );
 
-      showMessage(
-        'Account created successfully! Please check your email to verify your account before logging in.',
-        true
-      );
-
-      // Navigate to login after a short delay
-      setTimeout(() => {
-        navigation.navigate('Login');
-      }, 2000);
+        // Navigate to login after a short delay
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 2000);
+      } else {
+        showMessage(result.error || 'An error occurred during signup.');
+      }
 
     } catch (error) {
       console.error('Signup error:', error);
-      
-      let errorMessage = 'An error occurred during signup.';
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'An account with this email already exists.';
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Password is too weak. Please choose a stronger password.';
-      } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Network error. Please check your internet connection.';
-      }
-      
-      showMessage(errorMessage);
+      showMessage('An error occurred during signup.');
     }
   };
 

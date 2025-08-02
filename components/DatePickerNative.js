@@ -64,10 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
     backgroundColor: '#f9f9f9',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
     elevation: 2,
   },
   text: {

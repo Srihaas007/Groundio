@@ -1,9 +1,10 @@
 // navigation/AuthStackNavigator.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '../app/screens/auth/LoginScreen';
-import SignUpScreen from '../app/screens/auth/SignUpScreen';
-import ForgotPasswordScreen from '../app/screens/auth/ForgotPasswordScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import MerchantSignUpScreen from '../screens/auth/MerchantSignUpScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,10 @@ export default function AuthStackNavigator() {
       <Stack.Screen 
         name="Signup" 
         component={SignUpScreen}
+      />
+      <Stack.Screen 
+        name="MerchantSignup" 
+        component={MerchantSignUpScreen}
       />
       <Stack.Screen 
         name="ForgotPassword" 

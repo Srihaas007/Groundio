@@ -1,7 +1,7 @@
 // __tests__/HomeScreen.test.js
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import HomeScreen from '../app/screens/customers/HomeScreen';
+import HomeScreen from '../screens/customers/HomeScreen';
 import { AuthProvider } from '../context/AuthContext';
 
 // Mock Firebase

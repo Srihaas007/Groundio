@@ -1,15 +1,14 @@
-// app/screens/auth/SimpleLoginScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const SimpleLoginScreen = ({ navigation }) => {
+export default function SimpleSearchScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Simple Login Screen</Text>
-      <Text style={styles.subtitle}>This is a test screen</Text>
+      <Text style={styles.title}>Search Screen</Text>
+      <Text style={styles.subtitle}>Search functionality coming soon!</Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -21,12 +20,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    color: '#333',
+    marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
   },
 });
-
-export default SimpleLoginScreen;
