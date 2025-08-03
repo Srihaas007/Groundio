@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Groundio</string>
+    <string name="title_activity_main">Groundio</string>
+    <string name="package_name">com.groundio.app</string>
+    <string name="custom_url_scheme">com.groundio.app</string>
+</resources>

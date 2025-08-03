@@ -30,41 +30,62 @@ function Login({ setUser }) {
   }
 
   return (
-    <div className="page">
-      <div className="form-container">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+    <div className="page-container">
+      <section className="section auth-section">
+        <div className="container">
+          <div className="auth-container">
+            <div className="auth-header">
+              <h2 className="auth-title">Welcome Back</h2>
+              <p className="auth-subtitle">Sign in to your Groundio account</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              {error && <div className="form-error">{error}</div>}
+              
+              <button 
+                type="submit" 
+                disabled={loading}
+                className={`btn-primary btn-full-width ${loading ? 'btn-loading' : ''}`}
+              >
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+            </form>
+            
+            <div className="auth-footer">
+              <p className="auth-link-text">
+                Don't have an account?{' '}
+                <Link to="/signup" className="auth-link">
+                  Create one here
+                </Link>
+              </p>
+            </div>
           </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <div className="error">{error}</div>}
-          <button 
-            type="submit" 
-            disabled={loading}
-            style={{ width: '100%', marginTop: '1rem' }}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-        <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-          Don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
-      </div>
+        </div>
+      </section>
     </div>
   )
 }

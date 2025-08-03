@@ -4,6 +4,7 @@ import './App.css'
 
 // Components
 import Header from './components/Header'
+import PWAInstallButton from './components/PWAInstallButton'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Login from './pages/Login'
@@ -25,6 +26,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+        <PWAInstallButton />
       </div>
     </Router>
   )

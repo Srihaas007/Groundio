@@ -45,63 +45,90 @@ function SignUp({ setUser }) {
   }
 
   return (
-    <div className="page">
-      <div className="form-container">
-        <h2>Sign Up</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+    <div className="page-container">
+      <section className="section auth-section">
+        <div className="container">
+          <div className="auth-container">
+            <div className="auth-header">
+              <h2 className="auth-title">Join Groundio</h2>
+              <p className="auth-subtitle">Create your account to start booking venues</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password (min. 6 characters)"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  className="form-input"
+                  required
+                />
+              </div>
+              
+              {error && <div className="form-error">{error}</div>}
+              
+              <button 
+                type="submit" 
+                disabled={loading}
+                className={`btn-primary btn-full-width ${loading ? 'btn-loading' : ''}`}
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </button>
+            </form>
+            
+            <div className="auth-footer">
+              <p className="auth-link-text">
+                Already have an account?{' '}
+                <Link to="/login" className="auth-link">
+                  Sign in here
+                </Link>
+              </p>
+            </div>
           </div>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {error && <div className="error">{error}</div>}
-          <button 
-            type="submit" 
-            disabled={loading}
-            style={{ width: '100%', marginTop: '1rem' }}
-          >
-            {loading ? 'Creating Account...' : 'Sign Up'}
-          </button>
-        </form>
-        <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
-      </div>
+        </div>
+      </section>
     </div>
   )
 }
