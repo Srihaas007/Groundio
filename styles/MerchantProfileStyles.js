@@ -17,10 +17,7 @@ export const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#ffffff',
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
     elevation: 5,
   },
   backButton: {
@@ -53,10 +50,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 15,
     padding: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
   },
   title: {
     fontSize: 26,

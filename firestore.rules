@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Merchants can read and write their own merchant document
+    match /Merchants/{merchantId} {
+      allow read, write: if request.auth != null && request.auth.uid == merchantId;
+    }
+    
+    // Allow authenticated users to read venues (for browsing)
+    match /venues/{venueId} {
+      allow read: if request.auth != null;
+      // Only venue owners can write
+      allow write: if request.auth != null && request.auth.uid == resource.data.ownerId;
+    }
+    
+    // Allow authenticated users to read and write their own bookings
+    match /bookings/{bookingId} {
+      allow read, write: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.merchantId);
+    }
+    
+    // Allow authenticated users to read and write their own notifications
+    match /notifications/{notificationId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // For development purposes - you can remove this later
+    // This allows read access to all collections for authenticated users
+    match /{document=**} {
+      allow read: if request.auth != null;
+    }
+  }
+}

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groundio - Beautiful Sports Venue Booking</title>
+    <link rel="stylesheet" href="src/index.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .demo-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid hsl(var(--border));
+            padding: 1rem 0;
+            box-shadow: var(--shadow-soft);
+        }
+        .demo-navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .demo-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: hsl(var(--foreground));
+            text-decoration: none;
+        }
+        .demo-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .demo-nav a {
+            color: hsl(var(--muted-foreground));
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+        }
+        .demo-nav a:hover {
+            color: hsl(var(--primary));
+            background: hsl(var(--muted));
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="demo-navbar">
+        <div class="container">
+            <a href="#" class="demo-logo">
+                <span style="font-size: 2rem;">🏟️</span>
+                <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Groundio</span>
+            </a>
+            <div class="demo-nav">
+                <a href="#">Home</a>
+                <a href="#">Browse Venues</a>
+                <a href="#" class="btn btn-ghost">Sign In</a>
+                <a href="#" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                Find Your Perfect<br />
+                <span style="background: linear-gradient(135deg, #ffffff 0%, hsl(25, 95%, 53%) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    Sports Venue
+                </span>
+            </h1>
+            <p>
+                Book premium stadiums, sports complexes, and event venues across the city. 
+                From training sessions to tournaments - we've got you covered with the best facilities.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                <a href="#" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem; text-decoration: none; border-radius: 12px; min-width: 200px;">
+                    🔍 Find Venues
+                </a>
+                <a href="#" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.1rem; text-decoration: none; border-radius: 12px; min-width: 180px;">
+                    Join Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Groundio?</h2>
+                <p class="section-subtitle">
+                    Experience the future of sports venue booking with our cutting-edge platform designed for athletes and sports enthusiasts
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Instant Booking</h3>
+                    <p class="feature-description">Reserve your ideal sports venue in seconds with real-time availability and instant confirmation</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-title">Premium Facilities</h3>
+                    <p class="feature-description">Access world-class stadiums, courts, and sports complexes with professional-grade equipment</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3 class="feature-title">Secure Payments</h3>
+                    <p class="feature-description">Safe and encrypted payment processing with multiple payment options for your convenience</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile Ready</h3>
+                    <p class="feature-description">Book anywhere, anytime with our responsive platform optimized for all devices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sample Venue Cards -->
+    <section style="padding: 5rem 0; background: hsl(var(--surface-dark));">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Sports Venues</h2>
+                <p class="section-subtitle">Discover our most popular and highly-rated sports facilities</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                <!-- Venue Card 1 -->
+                <div class="card" style="overflow: hidden; cursor: pointer;">
+                    <div style="height: 200px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; position: relative;">
+                        🏟️
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 700;">
+                            Stadium
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--foreground)); margin-bottom: 0.5rem;">Elite Sports Arena</h3>
+                        <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                            Professional-grade stadium with FIFA-approved turf and modern amenities
+                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--primary));">₹2500/hr</span>
+                            <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; color: hsl(var(--accent-foreground)); background: hsl(var(--accent)); padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: 600;">
+                                ⭐ 4.9
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.9rem; font-weight: 700; text-decoration: none; border-radius: 12px;">
+                            🏃‍♂️ Book Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Venue Card 2 -->
+                <div class="card" style="overflow: hidden; cursor: pointer;">
+                    <div style="height: 200px; background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(25, 95%, 53%) 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; position: relative;">
+                        🏀
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 700;">
+                            Court
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--foreground)); margin-bottom: 0.5rem;">Champions Basketball Court</h3>
+                        <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                            Indoor court with professional lighting and scoreboard system
+                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--primary));">₹1200/hr</span>
+                            <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; color: hsl(var(--accent-foreground)); background: hsl(var(--accent)); padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: 600;">
+                                ⭐ 4.7
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.9rem; font-weight: 700; text-decoration: none; border-radius: 12px;">
+                            🏃‍♂️ Book Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Venue Card 3 -->
+                <div class="card" style="overflow: hidden; cursor: pointer;">
+                    <div style="height: 200px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; position: relative;">
+                        🎾
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 700;">
+                            Court
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--foreground)); margin-bottom: 0.5rem;">Tennis Club Premium</h3>
+                        <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                            Multiple courts with professional surface and equipment rental
+                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: hsl(var(--primary));">₹800/hr</span>
+                            <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; color: hsl(var(--accent-foreground)); background: hsl(var(--accent)); padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: 600;">
+                                ⭐ 4.8
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.9rem; font-weight: 700; text-decoration: none; border-radius: 12px;">
+                            🏃‍♂️ Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="padding: 5rem 0; background: var(--gradient-hero); color: white; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.05&quot;%3E%3Ccircle cx=&quot;30&quot; cy=&quot;30&quot; r=&quot;4&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E') repeat;"></div>
+        
+        <div class="container" style="text-align: center; position: relative; z-index: 1;">
+            <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">
+                Ready to Play? 🏆
+            </h2>
+            <p style="font-size: 1.25rem; opacity: 0.95; max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);">
+                Join thousands of athletes and sports enthusiasts who trust Groundio 
+                for premium venue bookings and unforgettable sporting experiences.
+            </p>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#" style="padding: 1rem 2rem; font-size: 1.1rem; background: rgba(255, 255, 255, 0.95); color: hsl(var(--primary)); border: none; border-radius: 12px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    🚀 Join Groundio
+                </a>
+                <a href="#" style="padding: 1rem 2rem; font-size: 1.1rem; background: transparent; border: 2px solid rgba(255, 255, 255, 0.9); color: white; border-radius: 12px; font-weight: 700; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    🏟️ List Your Venue
+                </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

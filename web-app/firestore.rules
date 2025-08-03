@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow all reads and writes for testing - CHANGE THIS FOR PRODUCTION
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+} 
+        && (request.auth.uid == resource.data.userId 
+            || request.auth.uid == resource.data.merchantId);
+      allow create: if request.auth != null;
+    }
+  }
+}

@@ -94,7 +94,6 @@
       }
     },
     "plugins": [
-      "expo-router",
       [
         "expo-location",
         {
@@ -124,9 +123,6 @@
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
       "eas": {
         "projectId": "your-eas-project-id"

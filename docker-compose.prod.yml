@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Production web app
+  groundio-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./docker/ssl:/etc/nginx/ssl:ro  # SSL certificates
+    restart: unless-stopped
+    networks:
+      - groundio-network
+    depends_on:
+      - postgres
+      - redis
+
+  # Production API server (if separate)
+  groundio-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: server
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://groundio:password123@postgres:5432/groundio
+      - REDIS_URL=redis://redis:6379
+    restart: unless-stopped
+    networks:
+      - groundio-network
+    depends_on:
+      - postgres
+      - redis
+
+  # Production Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=groundio
+      - POSTGRES_USER=groundio
+      - POSTGRES_PASSWORD=password123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    networks:
+      - groundio-network
+
+  # Production Redis
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - groundio-network
+
+  # Load balancer (if scaling)
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - groundio-web
+    networks:
+      - groundio-network
+
+networks:
+  groundio-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

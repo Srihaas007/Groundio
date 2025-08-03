@@ -1,14 +1,25 @@
-//context/AuthContext.js
+// context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authHelpers } from '../services/firebase';
+import { 
+  signInWithEmail, 
+  signInWithGoogle, 
+  signUpWithEmail, 
+  signOutUser, 
+  resetPassword,
+  onAuthStateChange,
+  createUserDocument
+} from '../services/firebase';
 
 // Define the context with a default value
 const AuthContext = createContext({
   currentUser: null,
   isLoggedIn: false,
   loading: true,
-  signIn: () => {},
-  signOut: () => {},
+  signInWithEmail: async (email, password) => {},
+  signInWithGoogle: async () => {},
+  signUpWithEmail: async (email, password) => {},
+  signOut: async () => {},
+  resetPassword: async (email) => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -16,7 +27,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = authHelpers.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChange((user) => {
+      console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
       setCurrentUser(user);
       setLoading(false);
     });
@@ -24,16 +36,20 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe; // Cleanup subscription
   }, []);
 
-  const signIn = async (user) => {
-    setCurrentUser(user);
-  };
-
-  const signOut = async () => {
+  // Enhanced sign up function with user document creation
+  const handleSignUpWithEmail = async (email, password, additionalData = {}) => {
     try {
-      await authHelpers.signOut();
-      setCurrentUser(null);
+      const result = await signUpWithEmail(email, password, additionalData.displayName);
+      
+      if (result.success && result.user) {
+        // Create user document in Firestore
+        await createUserDocument(result.user, additionalData);
+      }
+      
+      return result;
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error('SignUp error in AuthContext:', error);
+      return { success: false, error: error.message };
     }
   };
 
@@ -41,8 +57,11 @@ export const AuthProvider = ({ children }) => {
     currentUser, 
     isLoggedIn: !!currentUser, 
     loading,
-    signIn,
-    signOut
+    signInWithEmail,
+    signInWithGoogle,
+    signUpWithEmail: handleSignUpWithEmail,
+    signOut: signOutUser,
+    resetPassword,
   };
   
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
