@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Groundio - Test UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#3b82f6',
+            'secondary': '#10b981',
+            'background': '#ffffff',
+            'foreground': '#0f172a',
+            'muted': '#f1f5f9',
+            'muted-foreground': '#64748b',
+            'border': '#e2e8f0',
+            'card': '#ffffff',
+            'card-foreground': '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">G</span>
+          </div>
+          <span class="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Groundio
+          </span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#" class="text-foreground hover:text-primary transition-colors">Discover</a>
+          <a href="#" class="text-foreground hover:text-primary transition-colors">Book Now</a>
+          <a href="#" class="text-foreground hover:text-primary transition-colors">My Bookings</a>
+          <a href="#" class="text-foreground hover:text-primary transition-colors">List Venue</a>
+        </nav>
+
+        <!-- User Menu -->
+        <div class="flex items-center space-x-4">
+          <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center mb-12">
+        <!-- Main Heading -->
+        <div class="mb-6">
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+            <span class="bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+              Book Your Perfect
+            </span>
+            <br />
+            <span class="text-foreground">
+              Sports Venue
+            </span>
+          </h1>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          Discover and reserve premium sports facilities near you. From football pitches to tennis courts, 
+          find the perfect venue for your game.
+        </p>
+
+        <!-- Search Section -->
+        <div class="max-w-4xl mx-auto shadow-2xl border-0 bg-card/95 backdrop-blur-sm rounded-lg p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Location Input -->
+            <div class="relative">
+              <input
+                placeholder="Location"
+                class="w-full h-12 pl-10 pr-4 rounded-md border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <!-- Sport Type Input -->
+            <div class="relative">
+              <input
+                placeholder="Sport Type"
+                class="w-full h-12 pl-10 pr-4 rounded-md border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <!-- Date Input -->
+            <div class="relative">
+              <input
+                type="date"
+                class="w-full h-12 pl-10 pr-4 rounded-md border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <!-- Players Input -->
+            <div class="relative">
+              <input
+                placeholder="Players"
+                class="w-full h-12 pl-10 pr-4 rounded-md border border-border bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+          </div>
+
+          <!-- Search Button -->
+          <button class="w-full md:w-auto md:px-12 h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+            Search Venues
+          </button>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-2xl mx-auto">
+          <div class="text-center">
+            <div class="text-2xl md:text-3xl font-bold text-primary mb-1">500+</div>
+            <div class="text-sm text-muted-foreground">Sports Venues</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl md:text-3xl font-bold text-primary mb-1">50+</div>
+            <div class="text-sm text-muted-foreground">Cities</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl md:text-3xl font-bold text-primary mb-1">10k+</div>
+            <div class="text-sm text-muted-foreground">Happy Users</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl md:text-3xl font-bold text-primary mb-1">24/7</div>
+            <div class="text-sm text-muted-foreground">Support</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

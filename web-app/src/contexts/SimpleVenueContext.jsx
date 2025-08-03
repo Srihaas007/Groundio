@@ -179,7 +179,7 @@ export const VenueProvider = ({ children }) => {
   const searchVenues = (searchTerm, filters = {}) => {
     let filtered = venues
 
-    if (searchTerm) {
+    if (searchTerm && typeof searchTerm === 'string') {
       const searchLower = searchTerm.toLowerCase()
       filtered = filtered.filter(venue => 
         venue.name.toLowerCase().includes(searchLower) ||

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useVenues } from '../contexts/SimpleVenueContext'
-import Layout from '../components/Layout'
 import PageContainer from '../components/PageContainer'
 import VenueCard from '../components/VenueCard'
+import LocationService from '../services/locationService'
 
 const Search = () => {
   const { venues, searchVenues } = useVenues()
@@ -12,6 +12,40 @@ const Search = () => {
   const [priceRange, setPriceRange] = useState({ min: '', max: '' })
   const [sortBy, setSortBy] = useState('name')
   const [filteredVenues, setFilteredVenues] = useState([])
+  const [locationLoading, setLocationLoading] = useState(false)
+  const [userLocation, setUserLocation] = useState(null)
+
+  // Auto-detect user location on component mount
+  useEffect(() => {
+    detectUserLocation();
+  }, []);
+
+  const detectUserLocation = async () => {
+    setLocationLoading(true);
+    try {
+      // First check if we have stored location
+      const storedLocation = LocationService.getStoredLocation();
+      if (storedLocation && storedLocation.city) {
+        setLocationFilter(storedLocation.city);
+        setUserLocation(storedLocation);
+        setLocationLoading(false);
+        return;
+      }
+
+      // Get fresh location
+      const location = await LocationService.requestLocationPermission();
+      if (location && location.city) {
+        setLocationFilter(location.city);
+        setUserLocation(location);
+        LocationService.storeLocationData(location);
+      }
+    } catch (error) {
+      console.error('Location detection failed:', error);
+      // Don't show error to user, just continue without auto-location
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   useEffect(() => {
     const performSearch = async () => {
@@ -78,135 +112,157 @@ const Search = () => {
   const locations = [...new Set(venues.map(venue => venue.location?.city).filter(Boolean))]
 
   return (
-    <Layout>
-      <PageContainer>
-        <div className="search-page">
-          <div className="search-header">
-            <h1>Find Your Perfect Venue</h1>
-            <p>Search through our collection of premium sports and event venues</p>
+    <PageContainer>
+      <div className="search-page">
+        <div className="search-header">
+          <h1>Find Your Perfect Venue</h1>
+          <p>Search through our collection of premium sports and event venues</p>
+        </div>
+
+        <div className="search-filters">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search venues, sports, locations..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="search-input"
+            />
           </div>
 
-          <div className="search-filters">
-            <div className="search-bar">
+            <div className="filter-row">
+              <div className="location-input-wrapper">
+                <select 
+                  value={locationFilter} 
+                  onChange={handleLocationChange}
+                  className="filter-select"
+                  disabled={locationLoading}
+                >
+                  <option value="">
+                    {locationLoading ? 'Detecting location...' : 'All Locations'}
+                  </option>
+                  {locations.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
+                </select>
+                {locationLoading && (
+                  <div className="location-spinner">📍</div>
+                )}
+                {userLocation && !locationLoading && (
+                  <button 
+                    onClick={detectUserLocation}
+                    className="refresh-location-btn"
+                    title="Refresh location"
+                  >
+                    🔄
+                  </button>
+                )}
+              </div>            <select 
+              value={typeFilter} 
+              onChange={handleTypeChange}
+              className="filter-select"
+            >
+              <option value="">All Types</option>
+              {venueTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+
+            <div className="price-filter">
               <input
-                type="text"
-                placeholder="Search venues, sports, locations..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="search-input"
+                type="number"
+                placeholder="Min Price"
+                value={priceRange.min}
+                onChange={(e) => handlePriceRangeChange('min', e.target.value)}
+                className="price-input"
+              />
+              <span>-</span>
+              <input
+                type="number"
+                placeholder="Max Price"
+                value={priceRange.max}
+                onChange={(e) => handlePriceRangeChange('max', e.target.value)}
+                className="price-input"
               />
             </div>
 
-            <div className="filter-row">
-              <select 
-                value={locationFilter} 
-                onChange={handleLocationChange}
-                className="filter-select"
-              >
-                <option value="">All Locations</option>
-                {locations.map(location => (
-                  <option key={location} value={location}>{location}</option>
-                ))}
-              </select>
+            <select 
+              value={sortBy} 
+              onChange={handleSortChange}
+              className="filter-select"
+            >
+              <option value="name">Sort by Name</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Rating</option>
+            </select>
 
-              <select 
-                value={typeFilter} 
-                onChange={handleTypeChange}
-                className="filter-select"
-              >
-                <option value="">All Types</option>
-                {venueTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-
-              <div className="price-filter">
-                <input
-                  type="number"
-                  placeholder="Min Price"
-                  value={priceRange.min}
-                  onChange={(e) => handlePriceRangeChange('min', e.target.value)}
-                  className="price-input"
-                />
-                <span>-</span>
-                <input
-                  type="number"
-                  placeholder="Max Price"
-                  value={priceRange.max}
-                  onChange={(e) => handlePriceRangeChange('max', e.target.value)}
-                  className="price-input"
-                />
-              </div>
-
-              <select 
-                value={sortBy} 
-                onChange={handleSortChange}
-                className="filter-select"
-              >
-                <option value="name">Sort by Name</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Rating</option>
-              </select>
-
-              <button onClick={clearFilters} className="clear-filters-btn">
-                Clear Filters
-              </button>
-            </div>
-          </div>
-
-          <div className="search-results">
-            <div className="results-header">
-              <h2>
-                {filteredVenues.length} venue{filteredVenues.length !== 1 ? 's' : ''} found
-              </h2>
-            </div>
-
-            <div className="venues-grid">
-              {filteredVenues.length > 0 ? (
-                filteredVenues.map(venue => (
-                  <VenueCard key={venue.id} venue={venue} />
-                ))
-              ) : (
-                <div className="no-results">
-                  <h3>No venues found</h3>
-                  <p>Try adjusting your search criteria or clearing filters</p>
-                </div>
-              )}
-            </div>
+            <button onClick={clearFilters} className="clear-filters-btn">
+              Clear Filters
+            </button>
           </div>
         </div>
-      </PageContainer>
+
+        <div className="search-results">
+          <div className="results-header">
+            <h2>
+              {filteredVenues.length} venue{filteredVenues.length !== 1 ? 's' : ''} found
+            </h2>
+          </div>
+
+          <div className="venues-grid">
+            {filteredVenues.length > 0 ? (
+              filteredVenues.map(venue => (
+                <VenueCard key={venue.id} venue={venue} />
+              ))
+            ) : (
+              <div className="no-results">
+                <h3>No venues found</h3>
+                <p>Try adjusting your search criteria or clearing filters</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         .search-page {
           padding: 2rem 0;
+          background: #ffffff;
+          min-height: 100vh;
         }
 
         .search-header {
           text-align: center;
           margin-bottom: 3rem;
+          padding: 2rem;
+          background: #ffffff;
+          border-radius: 16px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .search-header h1 {
           font-size: clamp(2rem, 4vw, 3rem);
           margin-bottom: 1rem;
-          color: var(--text-primary);
+          color: #111827;
+          font-weight: 800;
         }
 
         .search-header p {
-          font-size: 1.1rem;
-          color: var(--text-secondary);
+          font-size: 1.125rem;
+          color: #4b5563;
           max-width: 600px;
           margin: 0 auto;
+          font-weight: 500;
         }
 
         .search-filters {
-          background: var(--surface);
+          background: #ffffff;
           padding: 2rem;
-          border-radius: 12px;
+          border-radius: 16px;
           margin-bottom: 3rem;
-          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e5e7eb;
         }
 
         .search-bar {
@@ -216,17 +272,23 @@ const Search = () => {
         .search-input {
           width: 100%;
           padding: 1rem 1.5rem;
-          border: 2px solid var(--border-color);
-          border-radius: 8px;
+          border: 2px solid #d1d5db;
+          border-radius: 12px;
           font-size: 1rem;
-          background: var(--background);
-          color: var(--text-primary);
+          background: #ffffff;
+          color: #111827;
           transition: border-color 0.3s ease;
+          font-weight: 500;
         }
 
         .search-input:focus {
           outline: none;
-          border-color: var(--primary);
+          border-color: #4f46e5;
+          box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-input::placeholder {
+          color: #9ca3af;
         }
 
         .filter-row {
@@ -236,14 +298,59 @@ const Search = () => {
           align-items: center;
         }
 
+        .location-input-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
         .filter-select {
           padding: 0.75rem 1rem;
-          border: 1px solid var(--border-color);
-          border-radius: 6px;
-          background: var(--background);
-          color: var(--text-primary);
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          background: #ffffff;
+          color: #111827;
           font-size: 0.9rem;
           min-width: 150px;
+          font-weight: 500;
+        }
+
+        .filter-select:focus {
+          outline: none;
+          border-color: #4f46e5;
+          box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        .filter-select:disabled {
+          background: #f3f4f6;
+          color: #6b7280;
+          cursor: not-allowed;
+        }
+
+        .location-spinner {
+          animation: pulse 2s infinite;
+          font-size: 1rem;
+        }
+
+        .refresh-location-btn {
+          background: transparent;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          padding: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          transition: all 0.2s ease;
+        }
+
+        .refresh-location-btn:hover {
+          background: #f3f4f6;
+          border-color: #4f46e5;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
 
         .price-filter {
@@ -333,7 +440,7 @@ const Search = () => {
           }
         }
       `}</style>
-    </Layout>
+    </PageContainer>
   )
 }
 
