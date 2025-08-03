@@ -8,8 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview --host",
-    "serve": "serve -s dist -l 3000",
-    "start": "node spa-server.js"
+    "serve": "http-server dist -p 3000 --proxy http://localhost:3000?",
+    "start": "npm run build && npm run serve",
+    "serve-spa": "npx http-server dist -p 3000 --proxy http://localhost:3000?"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.2",
@@ -20,7 +21,7 @@
     "@capacitor/splash-screen": "^6.0.2",
     "@capacitor/status-bar": "^6.0.1",
     "express": "^5.1.0",
-    "firebase": "^10.13.2",
+    "firebase": "^10.14.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",

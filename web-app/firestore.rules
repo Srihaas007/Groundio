@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Venues can be read by anyone, written by authenticated merchants
+    match /venues/{venueId} {
+      allow read: if true;
+      allow create, update: if request.auth != null 
+        && (request.auth.token.userType == 'merchant' || resource == null);
+      allow delete: if request.auth != null 
+        && request.auth.uid == resource.data.merchantId;
+    }
+    
+    // Bookings can be read/written by the user who made them or the venue owner
+    match /bookings/{bookingId} {
+      allow read, write: if request.auth != null 
+        && (request.auth.uid == resource.data.userId 
+            || request.auth.uid == resource.data.merchantId);
+      allow create: if request.auth != null;
+    }
+  }
+}

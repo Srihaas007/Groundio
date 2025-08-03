@@ -1,158 +1,339 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useVenues } from '../contexts/SimpleVenueContext'
+import Layout from '../components/Layout'
+import PageContainer from '../components/PageContainer'
+import VenueCard from '../components/VenueCard'
 
-function Search() {
+const Search = () => {
+  const { venues, searchVenues } = useVenues()
   const [searchTerm, setSearchTerm] = useState('')
-  const [location, setLocation] = useState('')
-  const [venueType, setVenueType] = useState('')
+  const [locationFilter, setLocationFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' })
+  const [sortBy, setSortBy] = useState('name')
+  const [filteredVenues, setFilteredVenues] = useState([])
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    // TODO: Implement search functionality
-    console.log('Searching for:', { searchTerm, location, venueType })
+  useEffect(() => {
+    const performSearch = async () => {
+      const results = await searchVenues({
+        searchTerm,
+        location: locationFilter,
+        type: typeFilter,
+        priceRange: priceRange.min || priceRange.max ? priceRange : null
+      })
+      
+      // Sort results
+      const sorted = [...results].sort((a, b) => {
+        switch (sortBy) {
+          case 'price-low':
+            return (a.pricePerHour || 0) - (b.pricePerHour || 0)
+          case 'price-high':
+            return (b.pricePerHour || 0) - (a.pricePerHour || 0)
+          case 'rating':
+            return (b.rating || 0) - (a.rating || 0)
+          case 'name':
+          default:
+            return a.name.localeCompare(b.name)
+        }
+      })
+      
+      setFilteredVenues(sorted)
+    }
+
+    performSearch()
+  }, [searchTerm, locationFilter, typeFilter, priceRange, sortBy, searchVenues])
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
   }
 
-  const mockResults = [
-    {
-      id: 1,
-      name: "Central Sports Hub",
-      location: "Downtown",
-      type: "Multi-purpose",
-      price: "₹1,200/hour",
-      image: "🏟️",
-      rating: 4.5
-    },
-    {
-      id: 2,
-      name: "Elite Tennis Academy", 
-      location: "Uptown",
-      type: "Tennis Court",
-      price: "₹600/hour",
-      image: "🎾",
-      rating: 4.8
-    },
-    {
-      id: 3,
-      name: "Aqua Sports Center",
-      location: "Westside", 
-      type: "Swimming Pool",
-      price: "₹900/hour",
-      image: "🏊",
-      rating: 4.3
-    },
-    {
-      id: 4,
-      name: "Champions Cricket Ground",
-      location: "Eastside",
-      type: "Cricket Ground", 
-      price: "₹2,500/hour",
-      image: "🏏",
-      rating: 4.6
-    },
-    {
-      id: 5,
-      name: "Urban Basketball Arena",
-      location: "Central",
-      type: "Basketball Court",
-      price: "₹800/hour", 
-      image: "🏀",
-      rating: 4.4
-    },
-    {
-      id: 6,
-      name: "Premier Badminton Club",
-      location: "Northside",
-      type: "Badminton Court",
-      price: "₹500/hour",
-      image: "🏸", 
-      rating: 4.7
-    }
-  ]
+  const handleLocationChange = (e) => {
+    setLocationFilter(e.target.value)
+  }
+
+  const handleTypeChange = (e) => {
+    setTypeFilter(e.target.value)
+  }
+
+  const handlePriceRangeChange = (field, value) => {
+    setPriceRange(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value)
+  }
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setLocationFilter('')
+    setTypeFilter('')
+    setPriceRange({ min: '', max: '' })
+    setSortBy('name')
+  }
+
+  const venueTypes = [...new Set(venues.map(venue => venue.type).filter(Boolean))]
+  const locations = [...new Set(venues.map(venue => venue.location?.city).filter(Boolean))]
 
   return (
-    <div className="page-container">
-      <section className="section">
-        <div className="container">
-          <div className="text-center mb-4">
-            <h1 className="section-title">Search Venues</h1>
-            <p className="section-subtitle">Find the perfect venue for your next game or event</p>
+    <Layout>
+      <PageContainer>
+        <div className="search-page">
+          <div className="search-header">
+            <h1>Find Your Perfect Venue</h1>
+            <p>Search through our collection of premium sports and event venues</p>
           </div>
-          
-          <form onSubmit={handleSearch} className="search-form">
-            <div className="search-form-grid">
-              <div className="form-group">
-                <label className="form-label">Search</label>
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search venues..."
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Location</label>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Enter location..."
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Venue Type</label>
-                <select
-                  value={venueType}
-                  onChange={(e) => setVenueType(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="">All Types</option>
-                  <option value="football">Football Field</option>
-                  <option value="basketball">Basketball Court</option>
-                  <option value="tennis">Tennis Court</option>
-                  <option value="swimming">Swimming Pool</option>
-                  <option value="cricket">Cricket Ground</option>
-                  <option value="badminton">Badminton Court</option>
-                </select>
-              </div>
+
+          <div className="search-filters">
+            <div className="search-bar">
+              <input
+                type="text"
+                placeholder="Search venues, sports, locations..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="search-input"
+              />
             </div>
-            <div className="text-center mt-3">
-              <button type="submit" className="btn-primary btn-large">
-                🔍 Search Venues
+
+            <div className="filter-row">
+              <select 
+                value={locationFilter} 
+                onChange={handleLocationChange}
+                className="filter-select"
+              >
+                <option value="">All Locations</option>
+                {locations.map(location => (
+                  <option key={location} value={location}>{location}</option>
+                ))}
+              </select>
+
+              <select 
+                value={typeFilter} 
+                onChange={handleTypeChange}
+                className="filter-select"
+              >
+                <option value="">All Types</option>
+                {venueTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+
+              <div className="price-filter">
+                <input
+                  type="number"
+                  placeholder="Min Price"
+                  value={priceRange.min}
+                  onChange={(e) => handlePriceRangeChange('min', e.target.value)}
+                  className="price-input"
+                />
+                <span>-</span>
+                <input
+                  type="number"
+                  placeholder="Max Price"
+                  value={priceRange.max}
+                  onChange={(e) => handlePriceRangeChange('max', e.target.value)}
+                  className="price-input"
+                />
+              </div>
+
+              <select 
+                value={sortBy} 
+                onChange={handleSortChange}
+                className="filter-select"
+              >
+                <option value="name">Sort by Name</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Rating</option>
+              </select>
+
+              <button onClick={clearFilters} className="clear-filters-btn">
+                Clear Filters
               </button>
             </div>
-          </form>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className="search-results-header">
-            <p className="results-count">Found {mockResults.length} venues</p>
           </div>
 
-          <div className="venues-grid">
-            {mockResults.map((venue) => (
-              <div key={venue.id} className="venue-card">
-                <div className="venue-image">{venue.image}</div>
-                <div className="venue-info">
-                  <h3 className="venue-name">{venue.name}</h3>
-                  <p className="venue-location">📍 {venue.location}</p>
-                  <p className="venue-type">{venue.type}</p>
-                  <div className="venue-details">
-                    <span className="venue-price">{venue.price}</span>
-                    <span className="venue-rating">⭐ {venue.rating}</span>
-                  </div>
-                  <button className="btn-secondary btn-full-width">
-                    Book Now
-                  </button>
+          <div className="search-results">
+            <div className="results-header">
+              <h2>
+                {filteredVenues.length} venue{filteredVenues.length !== 1 ? 's' : ''} found
+              </h2>
+            </div>
+
+            <div className="venues-grid">
+              {filteredVenues.length > 0 ? (
+                filteredVenues.map(venue => (
+                  <VenueCard key={venue.id} venue={venue} />
+                ))
+              ) : (
+                <div className="no-results">
+                  <h3>No venues found</h3>
+                  <p>Try adjusting your search criteria or clearing filters</p>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </PageContainer>
+
+      <style jsx>{`
+        .search-page {
+          padding: 2rem 0;
+        }
+
+        .search-header {
+          text-align: center;
+          margin-bottom: 3rem;
+        }
+
+        .search-header h1 {
+          font-size: clamp(2rem, 4vw, 3rem);
+          margin-bottom: 1rem;
+          color: var(--text-primary);
+        }
+
+        .search-header p {
+          font-size: 1.1rem;
+          color: var(--text-secondary);
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .search-filters {
+          background: var(--surface);
+          padding: 2rem;
+          border-radius: 12px;
+          margin-bottom: 3rem;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+          margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 1rem 1.5rem;
+          border: 2px solid var(--border-color);
+          border-radius: 8px;
+          font-size: 1rem;
+          background: var(--background);
+          color: var(--text-primary);
+          transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
+
+        .filter-row {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .filter-select {
+          padding: 0.75rem 1rem;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background);
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          min-width: 150px;
+        }
+
+        .price-filter {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .price-input {
+          width: 100px;
+          padding: 0.75rem;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background);
+          color: var(--text-primary);
+          font-size: 0.9rem;
+        }
+
+        .clear-filters-btn {
+          padding: 0.75rem 1.5rem;
+          background: var(--surface);
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .clear-filters-btn:hover {
+          background: var(--primary);
+          color: white;
+          border-color: var(--primary);
+        }
+
+        .search-results {
+          margin-top: 2rem;
+        }
+
+        .results-header {
+          margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+          font-size: 1.5rem;
+          color: var(--text-primary);
+        }
+
+        .venues-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 1.5rem;
+        }
+
+        .no-results {
+          text-align: center;
+          padding: 3rem;
+          grid-column: 1 / -1;
+        }
+
+        .no-results h3 {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+          color: var(--text-primary);
+        }
+
+        .no-results p {
+          color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+          .filter-row {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .filter-select {
+            min-width: unset;
+          }
+
+          .price-filter {
+            justify-content: center;
+          }
+
+          .venues-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+    </Layout>
   )
 }
 

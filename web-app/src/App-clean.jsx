@@ -1,9 +1,9 @@
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
 // Context
-import { VenueProvider } from './contexts/SimpleVenueContext'
-import { AuthProvider } from './contexts/AuthContext'
+import { VenueProvider } from './contexts/VenueContext'
 
 // Components
 import Layout from './components/Layout'
@@ -19,22 +19,23 @@ import MerchantSignUp from './pages/MerchantSignUp'
 import MerchantDashboard from './pages/MerchantDashboard'
 
 function App() {
+  const [user, setUser] = useState(null)
+
   return (
-    <AuthProvider>
-      <VenueProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              {/* Customer Routes */}
-              <Route path="/" element={<Home />} />
+    <VenueProvider>
+      <Router>
+        <Layout user={user} setUser={setUser}>
+          <Routes>
+            {/* Customer Routes */}
+            <Route path="/" element={<Home />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/signup" element={<SignUp setUser={setUser} />} />
             
             {/* Merchant Routes */}
-            <Route path="/merchant/login" element={<MerchantLogin />} />
-            <Route path="/merchant/signup" element={<MerchantSignUp />} />
-            <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
+            <Route path="/merchant/login" element={<MerchantLogin setUser={setUser} />} />
+            <Route path="/merchant/signup" element={<MerchantSignUp setUser={setUser} />} />
+            <Route path="/merchant/dashboard" element={<MerchantDashboard user={user} />} />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
@@ -43,7 +44,6 @@ function App() {
         </Layout>
       </Router>
     </VenueProvider>
-  </AuthProvider>
   )
 }
 
