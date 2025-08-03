@@ -1,30 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hello Groundio!</Text>
-      <Text style={styles.subText}>App is working on Web, iOS, and Android</Text>
-    </View>
-  );
+// Import the appropriate app based on platform
+let AppComponent;
+
+if (Platform.OS === 'web') {
+  // For web, use the React web app
+  AppComponent = require('./web-app/src/App.jsx').default;
+} else {
+  // For mobile, use the React Native app
+  AppComponent = require('./app/mobile/MobileApp').default;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-  },
-  subText: {
-    fontSize: 16,
-    color: '#666',
-  },
-});
+export default function App() {
+  return <AppComponent />;
+}

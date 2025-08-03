@@ -1,81 +1,212 @@
 import { useState } from "react";
-import { Search, Menu, User, MapPin } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Card } from "./ui/card";
+import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(4px)',
+      borderBottom: '1px solid #e5e7eb',
+      padding: '1rem 0'
+    }}>
+      <div className="container">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '4rem'
+        }}>
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">G</span>
+          <Link to="/" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            textDecoration: 'none'
+          }}>
+            <div style={{
+              width: '2rem',
+              height: '2rem',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+              borderRadius: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <span style={{
+                color: 'white',
+                fontWeight: '700',
+                fontSize: '1.125rem'
+              }}>G</span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+            <span style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               Groundio
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/discover" className="text-gray-700 hover:text-blue-600 transition-colors">
+          <nav style={{
+            display: 'none',
+            alignItems: 'center',
+            gap: '2rem'
+          }} className="desktop-nav">
+            <Link to="/discover" style={{
+              color: '#374151',
+              textDecoration: 'none',
+              transition: 'color 0.15s ease'
+            }}>
               Discover
             </Link>
-            <Link to="/book" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/book" style={{
+              color: '#374151',
+              textDecoration: 'none',
+              transition: 'color 0.15s ease'
+            }}>
               Book Now
             </Link>
-            <Link to="/bookings" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/bookings" style={{
+              color: '#374151',
+              textDecoration: 'none',
+              transition: 'color 0.15s ease'
+            }}>
               My Bookings
             </Link>
-            <Link to="/list-venue" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/list-venue" style={{
+              color: '#374151',
+              textDecoration: 'none',
+              transition: 'color 0.15s ease'
+            }}>
               List Venue
             </Link>
           </nav>
 
           {/* User Menu & Mobile Toggle */}
-          <div className="flex items-center space-x-4">
-            <Link to="/signin" className="hidden md:flex bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem'
+          }}>
+            <Link to="/signin" style={{
+              display: 'none',
+              background: '#3b82f6',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              textDecoration: 'none',
+              transition: 'background-color 0.15s ease'
+            }} className="desktop-signin">
               Sign In
             </Link>
             <button 
-              className="md:hidden p-2"
+              style={{
+                display: 'block',
+                padding: '0.5rem',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              className="mobile-menu-btn"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <Menu className="h-5 w-5" />
+              <Menu style={{ width: '1.25rem', height: '1.25rem' }} />
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mt-2 p-4 bg-white rounded-lg shadow-lg border">
-            <nav className="flex flex-col space-y-4">
-              <Link to="/discover" className="text-gray-700 hover:text-blue-600 transition-colors">
+          <div style={{
+            display: 'block',
+            marginTop: '0.5rem',
+            padding: '1rem',
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            border: '1px solid #e5e7eb'
+          }} className="mobile-menu">
+            <nav style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem'
+            }}>
+              <Link to="/discover" style={{
+                color: '#374151',
+                textDecoration: 'none',
+                transition: 'color 0.15s ease'
+              }}>
                 Discover
               </Link>
-              <Link to="/book" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/book" style={{
+                color: '#374151',
+                textDecoration: 'none',
+                transition: 'color 0.15s ease'
+              }}>
                 Book Now
               </Link>
-              <Link to="/bookings" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/bookings" style={{
+                color: '#374151',
+                textDecoration: 'none',
+                transition: 'color 0.15s ease'
+              }}>
                 My Bookings
               </Link>
-              <Link to="/list-venue" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/list-venue" style={{
+                color: '#374151',
+                textDecoration: 'none',
+                transition: 'color 0.15s ease'
+              }}>
                 List Venue
               </Link>
-              <hr className="border-gray-200" />
-              <Link to="/signin" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb' }} />
+              <Link to="/signin" style={{
+                color: '#374151',
+                textDecoration: 'none',
+                transition: 'color 0.15s ease'
+              }}>
                 Sign In
               </Link>
             </nav>
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .desktop-nav {
+            display: flex !important;
+          }
+          .desktop-signin {
+            display: inline-flex !important;
+          }
+          .mobile-menu-btn {
+            display: none !important;
+          }
+          .mobile-menu {
+            display: none !important;
+          }
+        }
+        
+        .desktop-nav a:hover,
+        .mobile-menu a:hover {
+          color: #2563eb !important;
+        }
+        
+        .desktop-signin:hover {
+          background-color: #1d4ed8 !important;
+        }
+      `}</style>
     </header>
   );
 };

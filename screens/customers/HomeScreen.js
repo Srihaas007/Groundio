@@ -169,7 +169,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#6366F1" />
+      <StatusBar barStyle="light-content" backgroundColor="hsl(142, 71%, 45%)" />
       
       {/* Modern Welcome Header */}
       <View style={styles.welcomeHeader}>
@@ -179,7 +179,7 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.userName}>{currentUser?.displayName || 'Athlete'}!</Text>
           </View>
           <View style={styles.profileAvatar}>
-            <Ionicons name="person" size={24} color="#6366F1" />
+            <Ionicons name="person" size={24} color="hsl(142, 71%, 45%)" />
           </View>
         </View>
       </View>
@@ -196,7 +196,7 @@ export default function HomeScreen({ navigation }) {
             placeholderTextColor="#9CA3AF"
           />
           <TouchableOpacity style={styles.filterButton}>
-            <Ionicons name="options" size={20} color="#6366F1" />
+            <Ionicons name="options" size={20} color="hsl(142, 71%, 45%)" />
           </TouchableOpacity>
         </View>
       </View>
@@ -236,8 +236,8 @@ export default function HomeScreen({ navigation }) {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh}
-            colors={['#6366F1']}
-            tintColor="#6366F1"
+            colors={['hsl(142, 71%, 45%)']}
+            tintColor="hsl(142, 71%, 45%)"
           />
         }
         showsVerticalScrollIndicator={false}
@@ -290,13 +290,13 @@ export default function HomeScreen({ navigation }) {
                   <View style={styles.venueHeader}>
                     <Text style={styles.venueName} numberOfLines={1}>{item.name}</Text>
                     <View style={styles.ratingBadge}>
-                      <Ionicons name="star" size={12} color="#FBBF24" />
+                      <Ionicons name="star" size={12} color="#FFFFFF" />
                       <Text style={styles.ratingText}>{item.rating || '4.8'}</Text>
                     </View>
                   </View>
                   
                   <View style={styles.locationRow}>
-                    <Ionicons name="location" size={14} color="#6B7280" />
+                    <Ionicons name="location" size={14} color="hsl(220, 9%, 46%)" />
                     <Text style={styles.venueLocation} numberOfLines={1}>
                       {typeof item.location === 'string' ? item.location : item.location?.address || item.location?.city || 'Location not available'}
                     </Text>
@@ -324,13 +324,17 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF', // Clean white background
   },
   welcomeHeader: {
-    backgroundColor: '#6366F1',
+    background: 'linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(217, 91%, 60%) 100%)', // Beautiful sports gradient
+    backgroundColor: 'hsl(142, 71%, 45%)', // Fallback for React Native
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 30,
     paddingHorizontal: 24,
+    ...(Platform.OS === 'web' && {
+      background: 'linear-gradient(135deg, hsl(142, 71%, 45%) 0%, hsl(217, 91%, 60%) 100%)',
+    }),
   },
   headerContent: {
     flexDirection: 'row',
@@ -339,22 +343,27 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '400',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   userName: {
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#FFFFFF',
     marginTop: 4,
+    textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   profileAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    elevation: 6,
   },
   searchContainer: {
     paddingHorizontal: 24,
@@ -368,32 +377,38 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 20,
     height: 56,
-    boxShadow: '0 8px 20px rgba(99, 102, 241, 0.15)',
-    elevation: 10,
+    boxShadow: '0 8px 30px rgba(142, 180, 120, 0.15)',
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: 'hsl(220, 13%, 91%)',
   },
   searchIcon: {
     marginRight: 12,
+    color: 'hsl(220, 9%, 46%)',
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1F2937',
+    color: 'hsl(220, 15%, 20%)',
     fontWeight: '500',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   filterButton: {
     padding: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: 'hsl(220, 14%, 96%)',
     borderRadius: 12,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   },
   categorySection: {
     marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#1F2937',
+    fontWeight: '800',
+    color: 'hsl(220, 15%, 20%)',
     paddingHorizontal: 24,
     marginBottom: 16,
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   categoryContainer: {
     paddingHorizontal: 24,
@@ -402,22 +417,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: 'hsl(220, 14%, 96%)',
     marginRight: 12,
     borderWidth: 2,
     borderColor: 'transparent',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   },
   categoryPillActive: {
-    backgroundColor: '#6366F1',
-    borderColor: '#6366F1',
+    backgroundColor: 'hsl(142, 71%, 45%)', // Primary green
+    borderColor: 'hsl(142, 71%, 45%)',
+    boxShadow: '0 4px 12px rgba(142, 180, 120, 0.3)',
+    elevation: 6,
   },
   categoryText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#64748B',
+    color: 'hsl(220, 9%, 46%)',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   categoryTextActive: {
-    color: '#FFFFFF',
+    color: 'hsl(0, 0%, 98%)', // Primary foreground
   },
   venuesContainer: {
     flex: 1,
@@ -431,13 +450,15 @@ const styles = StyleSheet.create({
   },
   venuesTitle: {
     fontSize: 22,
-    fontWeight: '700',
-    color: '#1F2937',
+    fontWeight: '800',
+    color: 'hsl(220, 15%, 20%)',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   venueCount: {
     fontSize: 14,
-    color: '#6B7280',
+    color: 'hsl(220, 9%, 46%)',
     fontWeight: '500',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   emptyState: {
     alignItems: 'center',
@@ -446,15 +467,17 @@ const styles = StyleSheet.create({
   },
   emptyStateTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#6B7280',
+    fontWeight: '700',
+    color: 'hsl(220, 9%, 46%)',
     marginTop: 16,
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   emptyStateText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: 'hsl(220, 9%, 46%)',
     marginTop: 8,
     textAlign: 'center',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   venuesList: {
     paddingHorizontal: 24,
@@ -465,8 +488,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 24,
     overflow: 'hidden',
-    boxShadow: '0 4px 16px rgba(31, 41, 55, 0.1)',
+    boxShadow: '0 8px 30px rgba(220, 220, 220, 0.12)',
     elevation: 8,
+    borderWidth: 1,
+    borderColor: 'hsl(220, 13%, 91%)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   },
   venueImageContainer: {
     position: 'relative',
@@ -485,16 +511,18 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   categoryBadge: {
-    backgroundColor: 'rgba(99, 102, 241, 0.9)',
+    backgroundColor: 'hsl(142, 71%, 45%)', // Primary green
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-    backdropFilter: 'blur(10px)',
+    boxShadow: '0 2px 8px rgba(142, 180, 120, 0.3)',
+    elevation: 4,
   },
   categoryBadgeText: {
-    color: '#FFFFFF',
+    color: 'hsl(0, 0%, 98%)',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   favoriteButton: {
     width: 40,
@@ -504,6 +532,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backdropFilter: 'blur(10px)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   },
   venueContent: {
     padding: 20,
@@ -516,24 +545,28 @@ const styles = StyleSheet.create({
   },
   venueName: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#1F2937',
+    fontWeight: '800',
+    color: 'hsl(220, 15%, 20%)',
     flex: 1,
     marginRight: 12,
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   ratingBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: 'hsl(25, 95%, 53%)', // Accent orange
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    boxShadow: '0 2px 6px rgba(255, 154, 46, 0.2)',
+    elevation: 3,
   },
   ratingText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#92400E',
+    fontWeight: '700',
+    color: 'hsl(0, 0%, 98%)',
     marginLeft: 4,
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   locationRow: {
     flexDirection: 'row',
@@ -542,10 +575,11 @@ const styles = StyleSheet.create({
   },
   venueLocation: {
     fontSize: 14,
-    color: '#6B7280',
+    color: 'hsl(220, 9%, 46%)',
     marginLeft: 6,
     flex: 1,
     fontWeight: '500',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   venueFooter: {
     flexDirection: 'row',
@@ -557,26 +591,30 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: 'hsl(220, 9%, 46%)',
     fontWeight: '500',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   price: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#6366F1',
+    fontWeight: '800',
+    color: 'hsl(142, 71%, 45%)', // Primary green
     marginTop: 2,
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
   bookButton: {
-    backgroundColor: '#6366F1',
+    backgroundColor: 'hsl(217, 91%, 60%)', // Secondary blue
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
-    boxShadow: '0 4px 8px rgba(99, 102, 241, 0.3)',
+    boxShadow: '0 4px 12px rgba(74, 144, 226, 0.3)',
     elevation: 4,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   },
   bookButtonText: {
-    color: '#FFFFFF',
+    color: 'hsl(0, 0%, 98%)',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
   },
 });
